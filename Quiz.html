@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS CLF-C02 Practice Quiz</title>
+<style>
+:root {
+  --bg:      #ece9e2;
+  --card:    #f5f3ee;
+  --brd:     #ccc8bc;
+  --txt:     #3a3530;
+  --dim:     #9a9590;
+  --sel-bg:  #e6e2d8;
+  --sel-brd: #aaa89f;
+  --c-ok:    #4a7a58;
+  --c-wr:    #9e3a3a;
+  --hl-ok:   #e6f0e9;
+  --hl-wr:   #f5e8e8;
+  --hl-ok-b: #7aaa8a;
+  --hl-wr-b: #c07878;
+  --q-ok:    #d0e8d8;
+  --q-wr:    #ecd4d4;
+  --btn:     #3a3530;
+  --btn-h:   #524e48;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Courier New', monospace;
+  background: var(--bg);
+  color: var(--txt);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem 5rem;
+  line-height: 1.65;
+  font-size: 13.5px;
+}
+header { margin-bottom: 2.5rem; border-bottom: 1px solid var(--brd); padding-bottom: 1rem; }
+h1 { font-size: 1rem; color: var(--txt); letter-spacing: 0.3px; font-weight: bold; }
+.sub { color: var(--dim); font-size: 0.78rem; margin-top: 0.25rem; }
+.question {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  border-radius: 2px;
+  padding: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+.question.q-right { border-color: var(--q-ok); background: #f6fbf8; }
+.question.q-wrong  { border-color: var(--q-wr); background: #fdf8f8; }
+.qhead { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+.qnum  { color: var(--dim); font-size: 0.75rem; }
+.qtag  {
+  font-size: 0.65rem;
+  padding: 0.05rem 0.32rem;
+  border-radius: 2px;
+  border: 1px solid #d0cec8;
+  background: #f0eee8;
+  color: #777;
+  letter-spacing: 0.6px;
+}
+.qtag.maq { background: #eaf0f8; border-color: #b0c8de; color: #4a78a0; }
+.qtext { font-size: 0.875rem; margin-bottom: 0.75rem; color: #3e3a34; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 2px;
+  margin-bottom: 0.2rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.option:hover { background: #e8e4db; }
+.option.selected { background: var(--sel-bg); border-color: var(--sel-brd); }
+.option input  { pointer-events: none; margin-top: 3px; flex-shrink: 0; accent-color: var(--c-ok); }
+.option label  { pointer-events: none; font-size: 0.84rem; color: #4a4540; line-height: 1.5; }
+/* post-check states */
+.option.hit    { background: var(--hl-ok) !important; border-color: var(--hl-ok-b) !important; }
+.option.hit label { color: var(--c-ok); }
+.option.miss   { background: var(--hl-wr) !important; border-color: var(--hl-wr-b) !important; }
+.option.miss label { color: var(--c-wr); }
+.option.reveal {
+  background: var(--hl-ok) !important;
+  border-color: var(--hl-ok-b) !important;
+  border-style: dashed !important;
+}
+.option.reveal label { color: var(--c-ok); }
+footer-bar {
+  display: block;
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--brd);
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.check-btn {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.65rem 2.2rem;
+  background: var(--btn);
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+}
+.check-btn:hover { background: var(--btn-h); }
+.check-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+#scorebox {
+  text-align: center;
+  margin: 2rem 0 0.5rem;
+}
+#score {
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+#score.pass { color: var(--c-ok); }
+#score.fail { color: var(--c-wr); }
+#verdict { color: var(--dim); font-size: 0.8rem; margin-top: 0.3rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AWS CLF-C02 Practice Quiz</h1>
+  <p class="sub">50 questions &nbsp;·&nbsp; MCQ = one correct answer &nbsp;·&nbsp; MAQ = select ALL that apply</p>
+</header>
+
+<div id="scorebox">
+  <div id="score"></div>
+  <div id="verdict"></div>
+</div>
+
+<div id="quiz"></div>
+
+<button class="check-btn" id="checkbtn" onclick="check()">Check Answers</button>
+
+<script>
+const Q = [
+  // 1
+  { type:'MCQ',
+    q:'A common exam trap states that the customer "owns the network-connected hardware and AWS provisions what is needed." Which statement CORRECTLY flips this?',
+    opts:[
+      'The customer leases dedicated rack space inside AWS data centres and AWS manages provisioning.',
+      'AWS owns and maintains the physical hardware; the customer provisions and uses resources over the internet.',
+      'Hardware ownership is shared — AWS owns compute hardware but customers own storage hardware.',
+      'The customer owns hardware in their chosen Region; AWS owns it everywhere else.'
+    ], ans:[1] },
+
+  // 2
+  { type:'MCQ',
+    q:'A /24 subnet is created in an Amazon VPC. After AWS reserves its mandatory IP addresses, how many are available for EC2 instances?',
+    opts:['256','254','252','251'], ans:[3] },
+
+  // 3
+  { type:'MAQ',
+    q:'Which of the following are components INCLUDED in an Amazon Machine Image (AMI)? Select all that apply.',
+    opts:[
+      'Root volume template',
+      'Launch permissions',
+      'Block device mapping',
+      'Instance pricing model',
+      'SSH key pair'
+    ], ans:[0,1,2] },
+
+  // 4
+  { type:'MCQ',
+    q:'Which statement about AWS IAM is FALSE?',
+    opts:[
+      'IAM is free to use.',
+      'IAM is a global service, not Region-specific.',
+      'An explicit Deny in a policy always overrides any Allow.',
+      'IAM groups can be nested inside other IAM groups.'
+    ], ans:[3] },
+
+  // 5
+  { type:'MCQ',
+    q:'Which EC2 pricing model uses spare AWS capacity, offers savings of up to ~90%, but can be reclaimed by AWS with only a 2-minute notification?',
+    opts:['On-Demand Instances','Reserved Instances (NURI)','Spot Instances','Dedicated Hosts'], ans:[2] },
+
+  // 6
+  { type:'MCQ',
+    q:'What is the smallest subnet CIDR block you can create in an Amazon VPC?',
+    opts:['/24','/28','/30','/32'], ans:[1] },
+
+  // 7
+  { type:'MCQ',
+    q:'A security team wants automated vulnerability scanning of EC2 instances and container images for known CVEs. Which service fits?',
+    opts:['Amazon GuardDuty','Amazon Macie','Amazon Inspector','AWS Security Hub'], ans:[2] },
+
+  // 8
+  { type:'MCQ',
+    q:'An auditor requests a complete log of every API call made in your AWS account over the past 90 days, including who made each call and when. Which service produces this?',
+    opts:['Amazon CloudWatch','AWS Config','AWS CloudTrail','Amazon GuardDuty'], ans:[2] },
+
+  // 9 — MAQ
+  { type:'MAQ',
+    q:'Which of the following statements about Security Groups are TRUE? Select all that apply.',
+    opts:[
+      'They operate at the instance or ENI level, not the subnet level.',
+      'They are stateful — return traffic is automatically allowed without an explicit rule.',
+      'They support both allow and deny rules.',
+      'All rules in a Security Group are evaluated simultaneously.',
+      'They operate at the subnet level, not the instance level.',
+      'By default, all inbound traffic to an instance is denied.'
+    ], ans:[0,1,3,5] },
+
+  // 10
+  { type:'MCQ',
+    q:'AWS pricing is based on three fundamental cost drivers. Which of the following is NOT one of them?',
+    opts:['Compute','Storage','Data Transfer','Number of IAM users in the account'], ans:[3] },
+
+  // 11
+  { type:'MCQ',
+    q:'Which AWS security service uses ML to discover and protect sensitive data including PII stored in Amazon S3 buckets?',
+    opts:['Amazon GuardDuty','Amazon Inspector','Amazon Macie','AWS WAF'], ans:[2] },
+
+  // 12
+  { type:'MCQ',
+    q:'An EBS volume exists in us-east-1a. A developer tries to attach it to an EC2 instance in us-east-1b. What happens?',
+    opts:[
+      'Success — EBS volumes are Region-scoped and attach to any instance in the same Region.',
+      'Failure — EBS volumes can only be attached to instances in the same Availability Zone.',
+      'Success with a warning — cross-AZ EBS attachment works but incurs data transfer charges.',
+      'Failure — each EBS volume is permanently locked to one instance at creation time.'
+    ], ans:[1] },
+
+  // 13
+  { type:'MCQ',
+    q:'An EC2 Reserved Instance with NO upfront payment is called what, and provides which discount tier?',
+    opts:[
+      'AURI — the largest RI discount.',
+      'PURI — the medium RI discount.',
+      'NURI — the smallest RI discount.',
+      'DURI — no discount; the full On-Demand rate still applies.'
+    ], ans:[2] },
+
+  // 14
+  { type:'MCQ',
+    q:'When a user creates a brand-new Amazon VPC, which resource is automatically created by AWS by default?',
+    opts:[
+      'An Internet Gateway',
+      'Three subnets spread across different Availability Zones',
+      'A NAT Gateway',
+      'A main route table'
+    ], ans:[3] },
+
+  // 15
+  { type:'MCQ',
+    q:'The AWS Well-Architected Framework was updated in December 2021 to add a 6th pillar focused on reducing the environmental impact of cloud workloads. Which pillar is this?',
+    opts:['Scalability','Security','Sustainability','Service Excellence'], ans:[2] },
+
+  // 16
+  { type:'MCQ',
+    q:'A workload runs 4 EC2 instances continuously all month but spikes to 12 instances on the final day. What is the MOST cost-effective pricing combination?',
+    opts:[
+      '12 Reserved Instances (covers both base and peak at the cheapest rate)',
+      '12 On-Demand Instances at all times',
+      '4 Reserved Instances for the steady base + 8 On-Demand Instances for the spike',
+      '12 Spot Instances for both the base and the spike'
+    ], ans:[2] },
+
+  // 17
+  { type:'MCQ',
+    q:'A team wants managed Kubernetes on AWS without maintaining the control plane. Which service fits?',
+    opts:['Amazon ECS','Amazon ECR','AWS Fargate','Amazon EKS'], ans:[3] },
+
+  // 18
+  { type:'MCQ',
+    q:'Which of the following statements about Service Control Policies (SCPs) in AWS Organizations is FALSE?',
+    opts:[
+      'SCPs can be applied to individual accounts or Organizational Units (OUs).',
+      'SCPs act as a permission ceiling — they define the maximum allowed actions.',
+      'An SCP alone can grant a user permission to call an AWS service API.',
+      'An explicit SCP Deny overrides any IAM Allow within affected accounts.'
+    ], ans:[2] },
+
+  // 19
+  { type:'MCQ',
+    q:'Amazon Aurora supports up to how many low-latency read replicas?',
+    opts:['5','10','15','20'], ans:[2] },
+
+  // 20 — MAQ
+  { type:'MAQ',
+    q:'Which of the following AWS services are FREE to use (no service charge, though underlying provisioned resources may still cost money)? Select all that apply.',
+    opts:[
+      'Amazon VPC',
+      'AWS IAM',
+      'AWS CloudFormation',
+      'EC2 Auto Scaling',
+      'Amazon EC2',
+      'AWS Elastic Beanstalk'
+    ], ans:[0,1,2,3,5] },
+
+  // 21
+  { type:'MCQ',
+    q:'A gaming company needs to route TCP/UDP traffic over the AWS global backbone using two static anycast IPs for predictable low-latency performance. Which service fits?',
+    opts:['Amazon CloudFront','Amazon Route 53','AWS Global Accelerator','AWS Direct Connect'], ans:[2] },
+
+  // 22
+  { type:'MCQ',
+    q:'You need to retrieve all DynamoDB items where the non-key attribute "status" equals "pending". Which operation must you use?',
+    opts:[
+      'Query — it can search by any attribute.',
+      'GetItem — it retrieves items matching any field.',
+      'Scan — it reads every item in the table and filters results.',
+      'Filter — it is a standalone DynamoDB operation.'
+    ], ans:[2] },
+
+  // 23
+  { type:'MCQ',
+    q:'AWS documentation states that a single data centre cannot be shared across multiple components of one specific infrastructure layer. Which layer is that?',
+    opts:['AWS Regions','Availability Zones','Edge Locations','Local Zones'], ans:[1] },
+
+  // 24 — MAQ
+  { type:'MAQ',
+    q:'Which of the following are TRUE about the AWS Enterprise support plan? Select all that apply.',
+    opts:[
+      'The maximum response time for a business-critical system outage is 15 minutes.',
+      'It includes a designated Technical Account Manager (TAM).',
+      'It includes access to the Concierge Support Team for billing help.',
+      'The response time for a production system down event is under 30 minutes.',
+      'It provides full access to all AWS Trusted Advisor checks.',
+      'The response time for production-impaired events is under 4 hours.'
+    ], ans:[0,1,2,4,5] },
+
+  // 25
+  { type:'MCQ',
+    q:'Which S3 storage class stores data in a single Availability Zone, is ~20% cheaper than Standard-IA, and is suitable for reproducible infrequently accessed data?',
+    opts:[
+      'S3 Glacier Instant Retrieval',
+      'S3 Standard-IA',
+      'S3 One Zone-IA',
+      'S3 Intelligent-Tiering'
+    ], ans:[2] },
+
+  // 26
+  { type:'MCQ',
+    q:'An IAM policy contains an explicit Allow AND an explicit Deny for the same action on the same resource. What is the effective permission?',
+    opts:[
+      'Allow — explicit allows override implicit denies.',
+      'Deny — explicit denies always override any allows.',
+      'Undefined — conflicting statements must be removed before the policy is valid.',
+      'Allow — the most recently created statement takes precedence.'
+    ], ans:[1] },
+
+  // 27 — MAQ
+  { type:'MAQ',
+    q:'The AWS Cloud Adoption Framework (CAF) organises its guidance into six perspectives. Which of the following ARE valid CAF perspectives? Select all that apply.',
+    opts:[
+      'Business','People','Governance','Platform','Security','Operations','Reliability','Sustainability'
+    ], ans:[0,1,2,3,4,5] },
+
+  // 28
+  { type:'MCQ',
+    q:'AWS Elastic Beanstalk is classified under which cloud service model?',
+    opts:[
+      'IaaS — because it provisions EC2 instances underneath.',
+      'PaaS — you upload code and AWS handles provisioning, deployment, and scaling.',
+      'SaaS — because the application itself is fully managed by AWS.',
+      'FaaS — because it runs serverless functions in response to events.'
+    ], ans:[1] },
+
+  // 29
+  { type:'MCQ',
+    q:'Which AWS billing tool provides the most granular line-item cost and usage dataset, including RI/Savings Plan metadata, and can be delivered to S3 for custom analysis?',
+    opts:['AWS Budgets','AWS Cost Explorer','AWS Billing Dashboard','AWS Cost and Usage Report (CUR)'], ans:[3] },
+
+  // 30 — MAQ
+  { type:'MAQ',
+    q:'Which of the following statements about Amazon S3 are TRUE? Select all that apply.',
+    opts:[
+      'S3 Standard objects are replicated across multiple AZs within the same Region by default.',
+      'All S3 bucket objects are private by default.',
+      'S3 bucket names must be globally unique across all AWS accounts.',
+      'A single S3 object can be up to 5 TB in size.',
+      'S3 objects are replicated across multiple AWS Regions by default.',
+      'S3 bucket names only need to be unique within your own AWS account.'
+    ], ans:[0,1,2,3] },
+
+  // 31
+  { type:'MCQ',
+    q:'What is the maximum size of a single object stored in Amazon S3?',
+    opts:['1 TB','5 TB','10 TB','Unlimited — S3 has no per-object size limit'], ans:[1] },
+
+  // 32
+  { type:'MCQ',
+    q:'An Internet Gateway (IGW) is attached to a VPC. Which statement CORRECTLY describes its function?',
+    opts:[
+      'It allows private-subnet instances to initiate outbound internet traffic only.',
+      'It connects two VPCs within the same Region via private routing.',
+      'It enables bidirectional internet traffic for instances in public subnets.',
+      'It establishes an encrypted VPN tunnel between an on-premises network and the VPC.'
+    ], ans:[2] },
+
+  // 33 — MAQ
+  { type:'MAQ',
+    q:'AWS Trusted Advisor organises its best-practice checks into five categories. Which of the following ARE those five categories? Select all that apply.',
+    opts:[
+      'Cost Optimization',
+      'Performance',
+      'Security',
+      'Fault Tolerance',
+      'Service Limits',
+      'High Availability',
+      'Data Transfer'
+    ], ans:[0,1,2,3,4] },
+
+  // 34
+  { type:'MCQ',
+    q:'"The system remains operational even when individual components fail, due to built-in component redundancy." This defines which concept?',
+    opts:['High Availability','Scalability','Reliability','Fault Tolerance'], ans:[3] },
+
+  // 35
+  { type:'MCQ',
+    q:'What is the primary role of the management (payer) account in AWS Organizations?',
+    opts:[
+      'It acts as the IAM identity provider for all member accounts.',
+      'It automatically deploys workloads to all member accounts.',
+      'It consolidates billing from all member accounts into a single invoice.',
+      'It enforces SCPs on itself and all member accounts equally.'
+    ], ans:[2] },
+
+  // 36 — MAQ
+  { type:'MAQ',
+    q:'Which of the following statements about Amazon EFS are CORRECT? Select all that apply.',
+    opts:[
+      'EFS is a managed Network File System (NFS).',
+      'EFS supports concurrent access by multiple EC2 instances simultaneously.',
+      'EFS is compatible with Linux-based AMIs only — not Windows.',
+      'EFS capacity scales automatically from zero to petabytes without pre-provisioning.',
+      'EFS is a block storage service, similar to EBS.',
+      'EFS volumes can only be mounted by a single EC2 instance at a time, like EBS.'
+    ], ans:[0,1,2,3] },
+
+  // 37
+  { type:'MCQ',
+    q:'A team wants to run Docker containers without managing any underlying servers or EC2 clusters. Which option fits?',
+    opts:['Amazon ECS with EC2 launch type','Amazon EKS','AWS Fargate','Amazon ECR'], ans:[2] },
+
+  // 38
+  { type:'MCQ',
+    q:'A product team wants 70% of traffic going to the current version and 30% to an experimental version for A/B testing. Which Route 53 routing policy enables this?',
+    opts:['Latency routing','Failover routing','Geolocation routing','Weighted routing'], ans:[3] },
+
+  // 39
+  { type:'MCQ',
+    q:'An EC2 instance uses storage that is physically attached to the host machine. When the instance is stopped or terminated, all data on that storage is permanently lost. What is this storage type?',
+    opts:['Amazon EBS General Purpose SSD (gp3)','Amazon EFS','Instance Store','Amazon S3'], ans:[2] },
+
+  // 40
+  { type:'MCQ',
+    q:'For an Elastic Load Balancer to accept and route incoming traffic, which component MUST be configured on it?',
+    opts:['A target group','A health check rule','A listener','A security policy'], ans:[2] },
+
+  // 41
+  { type:'MCQ',
+    q:'In Amazon S3 Glacier, what is the relationship between a "vault" and an "archive"?',
+    opts:[
+      'An archive is a container that holds multiple vaults.',
+      'A vault is a container that holds archives.',
+      'Vault and archive are interchangeable terms for the same object.',
+      'A vault is a metadata index; an archive is the access policy that governs it.'
+    ], ans:[1] },
+
+  // 42
+  { type:'MCQ',
+    q:'There are four recommended factors for choosing an AWS Region. Which of the following is NOT one of them?',
+    opts:[
+      'Compliance and data sovereignty laws',
+      'Proximity to end users for lower latency',
+      'Number of Availability Zones within the Region',
+      'Pricing and cost differences between Regions'
+    ], ans:[2] },
+
+  // 43
+  { type:'MCQ',
+    q:'Which statement about Docker containers is TRUE?',
+    opts:[
+      'Containers include a complete guest OS, making them more isolated than VMs.',
+      'Containers share the host OS kernel and do NOT contain a full operating system.',
+      'Containers take longer to start than VMs because they need to boot a full OS.',
+      'Docker containers on AWS can only run on Amazon EKS.'
+    ], ans:[1] },
+
+  // 44
+  { type:'MCQ',
+    q:'Amazon DynamoDB is the BEST choice for which of the following scenarios?',
+    opts:[
+      'Complex multi-table relational queries with transactions and referential integrity.',
+      'Petabyte-scale SQL analytics with columnar query optimisation for BI dashboards.',
+      'Session-state storage for millions of concurrent users requiring single-digit-ms access with a flexible schema.',
+      'Long-term archival of rarely accessed compliance records at the lowest possible cost.'
+    ], ans:[2] },
+
+  // 45
+  { type:'MCQ',
+    q:'In EC2 Auto Scaling, "scale in" refers to which action?',
+    opts:[
+      'Increasing the CPU and memory of existing instances (vertical scaling).',
+      'Launching additional EC2 instances to handle a surge in demand.',
+      'Terminating EC2 instances to reduce capacity when demand drops.',
+      'Migrating On-Demand instances to Reserved pricing at month end.'
+    ], ans:[2] },
+
+  // 46
+  { type:'MCQ',
+    q:'Which type of Elastic Load Balancer operates at OSI Layer 4 and is designed for extreme performance with TCP and UDP traffic?',
+    opts:[
+      'Application Load Balancer (ALB)',
+      'Classic Load Balancer (CLB)',
+      'Network Load Balancer (NLB)',
+      'Gateway Load Balancer (GWLB)'
+    ], ans:[2] },
+
+  // 47 — MAQ
+  { type:'MAQ',
+    q:'Which of the following actions can ONLY be performed by the AWS account root user — not by any IAM user, even one with AdministratorAccess? Select all that apply.',
+    opts:[
+      'Changing the AWS account support plan',
+      'Closing (deleting) the AWS account',
+      'Deleting an Amazon S3 bucket',
+      'Creating IAM users and groups',
+      'Changing the account name or root email address'
+    ], ans:[0,1,4] },
+
+  // 48
+  { type:'MCQ',
+    q:'What is the MAXIMUM memory that can be allocated to a single AWS Lambda function execution environment?',
+    opts:[
+      '3,008 MB (the original Lambda memory limit)',
+      '6,144 MB',
+      '10,240 MB (10 GB)',
+      '15,360 MB (15 GB)'
+    ], ans:[2] },
+
+  // 49 — MAQ
+  { type:'MAQ',
+    q:'Which of the following are valid EC2 instance families? Select all that apply.',
+    opts:[
+      'General Purpose',
+      'Compute Optimized',
+      'Memory Optimized',
+      'Storage Optimized',
+      'Accelerated Computing',
+      'Network Optimized',
+      'Transfer Optimized'
+    ], ans:[0,1,2,3,4] },
+
+  // 50
+  { type:'MCQ',
+    q:'Which of the following BEST captures the foundational cloud architecture principle AWS recommends for building resilient systems?',
+    opts:[
+      '"Build tightly-coupled components so failures are contained and simple to trace."',
+      '"Provision for maximum expected peak load at all times to eliminate any risk of degradation."',
+      '"Assume everything will fail — design systems to handle failure gracefully rather than prevent it."',
+      '"Deploy all workloads in a single AWS Region to reduce cross-Region latency and management overhead."'
+    ], ans:[2] }
+];
+
+/* ---- render ---- */
+const container = document.getElementById('quiz');
+Q.forEach((q, qi) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'question';
+  wrap.id = 'q' + qi;
+
+  const isMaq = q.type === 'MAQ';
+  wrap.innerHTML =
+    `<div class="qhead">
+       <span class="qnum">Q${qi + 1} / ${Q.length}</span>
+       <span class="qtag${isMaq ? ' maq' : ''}">${q.type}</span>
+     </div>
+     <div class="qtext">${q.q}</div>` +
+    q.opts.map((o, oi) => {
+      const t = isMaq ? 'checkbox' : 'radio';
+      return `<div class="option" id="opt_${qi}_${oi}" onclick="pick(this,'${t}','q${qi}')">
+        <input type="${t}" name="q${qi}" value="${oi}">
+        <label>${String.fromCharCode(65 + oi)}) ${o}</label>
+      </div>`;
+    }).join('');
+
+  container.appendChild(wrap);
+});
+
+/* ---- pick ---- */
+let done = false;
+function pick(div, type, name) {
+  if (done) return;
+  const inp = div.querySelector('input');
+  if (type === 'radio') {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+      r.checked = false;
+      r.closest('.option').classList.remove('selected');
+    });
+    inp.checked = true;
+    div.classList.add('selected');
+  } else {
+    inp.checked = !inp.checked;
+    div.classList.toggle('selected', inp.checked);
+  }
+}
+
+/* ---- check ---- */
+function check() {
+  done = true;
+  document.getElementById('checkbtn').disabled = true;
+
+  let correct = 0;
+  Q.forEach((q, qi) => {
+    const qDiv  = document.getElementById('q' + qi);
+    const inps  = qDiv.querySelectorAll('input');
+    const sel   = new Set();
+    inps.forEach((inp, oi) => { if (inp.checked) sel.add(oi); });
+    const correctSet = new Set(q.ans);
+
+    const isRight = q.ans.length === sel.size && q.ans.every(a => sel.has(a));
+    if (isRight) { correct++; qDiv.classList.add('q-right'); }
+    else           qDiv.classList.add('q-wrong');
+
+    q.opts.forEach((_, oi) => {
+      const optDiv = document.getElementById(`opt_${qi}_${oi}`);
+      optDiv.classList.remove('selected');
+      const wasSel = sel.has(oi);
+      const isAns  = correctSet.has(oi);
+      if      (wasSel && isAns)  optDiv.classList.add('hit');
+      else if (wasSel && !isAns) optDiv.classList.add('miss');
+      else if (!wasSel && isAns) optDiv.classList.add('reveal');
+    });
+  });
+
+  const pct = Math.round(correct / Q.length * 100);
+  const scoreEl = document.getElementById('score');
+  scoreEl.textContent = `${correct} / ${Q.length}  (${pct}%)`;
+  scoreEl.className = pct >= 70 ? 'pass' : 'fail';
+
+  const msgs = [
+    [90, 'Strong result. You\'re likely ready.'],
+    [80, 'Good. A few areas worth revisiting before the exam.'],
+    [70, 'Passing threshold. Review the questions you missed.'],
+    [50, 'Below passing. More study needed before sitting the exam.'],
+    [0,  'Significant gaps. Return to the fundamentals.']
+  ];
+  document.getElementById('verdict').textContent = msgs.find(([t]) => pct >= t)[1];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
