@@ -3,26 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('quiz-theme')||'light');</script>
 <title>AWS CLF-C02 Practice Quiz</title>
 <style>
+/* ── light theme (default) ── */
 :root {
-  --bg:      #ece9e2;
-  --card:    #f5f3ee;
-  --brd:     #ccc8bc;
-  --txt:     #3a3530;
-  --dim:     #9a9590;
-  --sel-bg:  #e6e2d8;
-  --sel-brd: #aaa89f;
-  --c-ok:    #4a7a58;
-  --c-wr:    #9e3a3a;
-  --hl-ok:   #e6f0e9;
-  --hl-wr:   #f5e8e8;
-  --hl-ok-b: #7aaa8a;
-  --hl-wr-b: #c07878;
-  --q-ok:    #d0e8d8;
-  --q-wr:    #ecd4d4;
-  --btn:     #3a3530;
-  --btn-h:   #524e48;
+  --bg:         #f0ede6;
+  --card:       #faf8f4;
+  --brd:        #c8c4b8;
+  --txt:        #1a1714;
+  --dim:        #88857e;
+  --sel-bg:     #e6e2d8;
+  --sel-brd:    #aaa89f;
+  --c-ok:       #3d6e4a;
+  --c-wr:       #9a3030;
+  --hl-ok:      #e4f0e8;
+  --hl-wr:      #f5e8e8;
+  --hl-ok-b:    #74a882;
+  --hl-wr-b:    #c07070;
+  --q-ok-bg:    #eef6f0;
+  --q-ok-brd:   #a8d4b8;
+  --q-wr-bg:    #faf0f0;
+  --q-wr-brd:   #e4b0b0;
+  --opt-hover:  #e8e4db;
+  --qtag-bg:    #eeeae2;
+  --qtag-brd:   #ccc8bc;
+  --qtag-txt:   #666;
+  --maq-bg:     #e8f0f8;
+  --maq-brd:    #a8c4d8;
+  --maq-txt:    #3a6888;
+  --btn-bg:     #1a1714;
+  --btn-txt:    #f0ede6;
+  --btn-hover:  #3a3530;
+}
+/* ── dark theme ── */
+[data-theme="dark"] {
+  --bg:         #111110;
+  --card:       #1c1b19;
+  --brd:        #2e2c28;
+  --txt:        #f0ede6;
+  --dim:        #88857e;
+  --sel-bg:     #252320;
+  --sel-brd:    #555450;
+  --c-ok:       #5aaa72;
+  --c-wr:       #cc5555;
+  --hl-ok:      #0d1e12;
+  --hl-wr:      #1e0d0d;
+  --hl-ok-b:    #3a6e4a;
+  --hl-wr-b:    #7a3030;
+  --q-ok-bg:    #0f2016;
+  --q-ok-brd:   #2e5e3a;
+  --q-wr-bg:    #200f0f;
+  --q-wr-brd:   #5e2e2e;
+  --opt-hover:  #242320;
+  --qtag-bg:    #252320;
+  --qtag-brd:   #3a3830;
+  --qtag-txt:   #88857e;
+  --maq-bg:     #151e28;
+  --maq-brd:    #2e4460;
+  --maq-txt:    #6a9ecc;
+  --btn-bg:     #f0ede6;
+  --btn-txt:    #111110;
+  --btn-hover:  #d8d4cc;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -36,8 +78,24 @@ body {
   font-size: 13.5px;
 }
 header { margin-bottom: 2.5rem; border-bottom: 1px solid var(--brd); padding-bottom: 1rem; }
+.header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 h1 { font-size: 1rem; color: var(--txt); letter-spacing: 0.3px; font-weight: bold; }
 .sub { color: var(--dim); font-size: 0.78rem; margin-top: 0.25rem; }
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--brd);
+  color: var(--dim);
+  font-family: inherit;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  transition: color 0.1s, border-color 0.1s;
+}
+.theme-toggle:hover { color: var(--txt); border-color: var(--dim); }
 .question {
   background: var(--card);
   border: 1px solid var(--brd);
@@ -45,21 +103,21 @@ h1 { font-size: 1rem; color: var(--txt); letter-spacing: 0.3px; font-weight: bol
   padding: 1.1rem;
   margin-bottom: 0.8rem;
 }
-.question.q-right { border-color: var(--q-ok); background: #f6fbf8; }
-.question.q-wrong  { border-color: var(--q-wr); background: #fdf8f8; }
+.question.q-right { border-color: var(--q-ok-brd); background: var(--q-ok-bg); }
+.question.q-wrong  { border-color: var(--q-wr-brd); background: var(--q-wr-bg); }
 .qhead { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
 .qnum  { color: var(--dim); font-size: 0.75rem; }
 .qtag  {
   font-size: 0.65rem;
   padding: 0.05rem 0.32rem;
   border-radius: 2px;
-  border: 1px solid #d0cec8;
-  background: #f0eee8;
-  color: #777;
+  border: 1px solid var(--qtag-brd);
+  background: var(--qtag-bg);
+  color: var(--qtag-txt);
   letter-spacing: 0.6px;
 }
-.qtag.maq { background: #eaf0f8; border-color: #b0c8de; color: #4a78a0; }
-.qtext { font-size: 0.875rem; margin-bottom: 0.75rem; color: #3e3a34; }
+.qtag.maq { background: var(--maq-bg); border-color: var(--maq-brd); color: var(--maq-txt); }
+.qtext { font-size: 0.875rem; margin-bottom: 0.75rem; color: var(--txt); }
 .option {
   display: flex;
   align-items: flex-start;
@@ -71,10 +129,10 @@ h1 { font-size: 1rem; color: var(--txt); letter-spacing: 0.3px; font-weight: bol
   border: 1px solid transparent;
   user-select: none;
 }
-.option:hover { background: #e8e4db; }
+.option:hover { background: var(--opt-hover); }
 .option.selected { background: var(--sel-bg); border-color: var(--sel-brd); }
 .option input  { pointer-events: none; margin-top: 3px; flex-shrink: 0; accent-color: var(--c-ok); }
-.option label  { pointer-events: none; font-size: 0.84rem; color: #4a4540; line-height: 1.5; }
+.option label  { pointer-events: none; font-size: 0.84rem; color: var(--txt); line-height: 1.5; }
 /* post-check states */
 .option.hit    { background: var(--hl-ok) !important; border-color: var(--hl-ok-b) !important; }
 .option.hit label { color: var(--c-ok); }
@@ -101,8 +159,8 @@ footer-bar {
   display: block;
   margin: 1.5rem auto 0;
   padding: 0.65rem 2.2rem;
-  background: var(--btn);
-  color: #fff;
+  background: var(--btn-bg);
+  color: var(--btn-txt);
   border: none;
   border-radius: 2px;
   font-family: inherit;
@@ -110,17 +168,10 @@ footer-bar {
   cursor: pointer;
   letter-spacing: 0.3px;
 }
-.check-btn:hover { background: var(--btn-h); }
+.check-btn:hover { background: var(--btn-hover); }
 .check-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-#scorebox {
-  text-align: center;
-  margin: 2rem 0 0.5rem;
-}
-#score {
-  font-size: 2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
+#scorebox { text-align: center; margin: 2rem 0 0.5rem; }
+#score { font-size: 2rem; font-weight: bold; letter-spacing: 1px; }
 #score.pass { color: var(--c-ok); }
 #score.fail { color: var(--c-wr); }
 #verdict { color: var(--dim); font-size: 0.8rem; margin-top: 0.3rem; }
@@ -129,8 +180,13 @@ footer-bar {
 <body>
 
 <header>
-  <h1>AWS CLF-C02 Practice Quiz</h1>
-  <p class="sub">50 questions &nbsp;·&nbsp; MCQ = one correct answer &nbsp;·&nbsp; MAQ = select ALL that apply</p>
+  <div class="header-row">
+    <div>
+      <h1>AWS CLF-C02 Practice Quiz</h1>
+      <p class="sub">50 questions &nbsp;·&nbsp; MCQ = one correct answer &nbsp;·&nbsp; MAQ = select ALL that apply</p>
+    </div>
+    <button class="theme-toggle" id="themetoggle" onclick="toggleTheme()"></button>
+  </div>
 </header>
 
 <div id="scorebox">
@@ -651,6 +707,20 @@ function check() {
   document.getElementById('verdict').textContent = msgs.find(([t]) => pct >= t)[1];
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ---- theme toggle ---- */
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('quiz-theme', next);
+  document.getElementById('themetoggle').textContent = next === 'dark' ? 'light' : 'dark';
+}
+// set initial button label
+(function() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  document.getElementById('themetoggle').textContent = current === 'dark' ? 'light' : 'dark';
+})();
 </script>
 </body>
 </html>
