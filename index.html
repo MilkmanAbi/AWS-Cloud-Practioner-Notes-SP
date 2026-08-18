@@ -3,724 +3,651 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('quiz-theme')||'light');</script>
-<title>AWS CLF-C02 Practice Quiz</title>
+<title>ET0740 LAB3 Guide Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
 <style>
-/* ── light theme (default) ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-  --bg:         #f0ede6;
-  --card:       #faf8f4;
-  --brd:        #c8c4b8;
-  --txt:        #1a1714;
-  --dim:        #88857e;
-  --sel-bg:     #e6e2d8;
-  --sel-brd:    #aaa89f;
-  --c-ok:       #3d6e4a;
-  --c-wr:       #9a3030;
-  --hl-ok:      #e4f0e8;
-  --hl-wr:      #f5e8e8;
-  --hl-ok-b:    #74a882;
-  --hl-wr-b:    #c07070;
-  --q-ok-bg:    #eef6f0;
-  --q-ok-brd:   #a8d4b8;
-  --q-wr-bg:    #faf0f0;
-  --q-wr-brd:   #e4b0b0;
-  --opt-hover:  #e8e4db;
-  --qtag-bg:    #eeeae2;
-  --qtag-brd:   #ccc8bc;
-  --qtag-txt:   #666;
-  --maq-bg:     #e8f0f8;
-  --maq-brd:    #a8c4d8;
-  --maq-txt:    #3a6888;
-  --btn-bg:     #1a1714;
-  --btn-txt:    #f0ede6;
-  --btn-hover:  #3a3530;
+  --bg:       #ffffff;
+  --surface:  #f6f8fa;
+  --border:   #d0d7de;
+  --text:     #1f2328;
+  --muted:    #656d76;
+  --accent:   #0969da;
+  --warn-bg:  #fff8c5;
+  --warn-br:  #d4a72c;
+  --code-bg:  #f6f8fa;
+  --mono:     ui-monospace, 'SFMono-Regular', 'Consolas', monospace;
+  --sans:     -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
-/* ── dark theme ── */
-[data-theme="dark"] {
-  --bg:         #111110;
-  --card:       #1c1b19;
-  --brd:        #2e2c28;
-  --txt:        #f0ede6;
-  --dim:        #88857e;
-  --sel-bg:     #252320;
-  --sel-brd:    #555450;
-  --c-ok:       #5aaa72;
-  --c-wr:       #cc5555;
-  --hl-ok:      #0d1e12;
-  --hl-wr:      #1e0d0d;
-  --hl-ok-b:    #3a6e4a;
-  --hl-wr-b:    #7a3030;
-  --q-ok-bg:    #0f2016;
-  --q-ok-brd:   #2e5e3a;
-  --q-wr-bg:    #200f0f;
-  --q-wr-brd:   #5e2e2e;
-  --opt-hover:  #242320;
-  --qtag-bg:    #252320;
-  --qtag-brd:   #3a3830;
-  --qtag-txt:   #88857e;
-  --maq-bg:     #151e28;
-  --maq-brd:    #2e4460;
-  --maq-txt:    #6a9ecc;
-  --btn-bg:     #f0ede6;
-  --btn-txt:    #111110;
-  --btn-hover:  #d8d4cc;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'Courier New', monospace;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
   background: var(--bg);
-  color: var(--txt);
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 1.2rem 5rem;
-  line-height: 1.65;
-  font-size: 13.5px;
 }
-header { margin-bottom: 2.5rem; border-bottom: 1px solid var(--brd); padding-bottom: 1rem; }
-.header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-h1 { font-size: 1rem; color: var(--txt); letter-spacing: 0.3px; font-weight: bold; }
-.sub { color: var(--dim); font-size: 0.78rem; margin-top: 0.25rem; }
-.theme-toggle {
-  background: none;
-  border: 1px solid var(--brd);
-  color: var(--dim);
-  font-family: inherit;
-  font-size: 0.72rem;
-  padding: 0.2rem 0.55rem;
-  border-radius: 2px;
-  cursor: pointer;
-  letter-spacing: 0.4px;
-  flex-shrink: 0;
-  margin-top: 0.1rem;
-  transition: color 0.1s, border-color 0.1s;
-}
-.theme-toggle:hover { color: var(--txt); border-color: var(--dim); }
-.question {
-  background: var(--card);
-  border: 1px solid var(--brd);
-  border-radius: 2px;
-  padding: 1.1rem;
-  margin-bottom: 0.8rem;
-}
-.question.q-right { border-color: var(--q-ok-brd); background: var(--q-ok-bg); }
-.question.q-wrong  { border-color: var(--q-wr-brd); background: var(--q-wr-bg); }
-.qhead { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
-.qnum  { color: var(--dim); font-size: 0.75rem; }
-.qtag  {
-  font-size: 0.65rem;
-  padding: 0.05rem 0.32rem;
-  border-radius: 2px;
-  border: 1px solid var(--qtag-brd);
-  background: var(--qtag-bg);
-  color: var(--qtag-txt);
-  letter-spacing: 0.6px;
-}
-.qtag.maq { background: var(--maq-bg); border-color: var(--maq-brd); color: var(--maq-txt); }
-.qtext { font-size: 0.875rem; margin-bottom: 0.75rem; color: var(--txt); }
-.option {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.55rem;
-  padding: 0.4rem 0.55rem;
-  border-radius: 2px;
-  margin-bottom: 0.2rem;
-  cursor: pointer;
-  border: 1px solid transparent;
-  user-select: none;
-}
-.option:hover { background: var(--opt-hover); }
-.option.selected { background: var(--sel-bg); border-color: var(--sel-brd); }
-.option input  { pointer-events: none; margin-top: 3px; flex-shrink: 0; accent-color: var(--c-ok); }
-.option label  { pointer-events: none; font-size: 0.84rem; color: var(--txt); line-height: 1.5; }
-/* post-check states */
-.option.hit    { background: var(--hl-ok) !important; border-color: var(--hl-ok-b) !important; }
-.option.hit label { color: var(--c-ok); }
-.option.miss   { background: var(--hl-wr) !important; border-color: var(--hl-wr-b) !important; }
-.option.miss label { color: var(--c-wr); }
-.option.reveal {
-  background: var(--hl-ok) !important;
-  border-color: var(--hl-ok-b) !important;
-  border-style: dashed !important;
-}
-.option.reveal label { color: var(--c-ok); }
-footer-bar {
-  display: block;
-  position: sticky;
-  bottom: 0;
-  background: var(--bg);
-  border-top: 1px solid var(--brd);
-  padding: 0.8rem 1.2rem;
+
+/* ── Setup screen ─────────────────────────────────────── */
+#setup-screen {
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--bg);
 }
-.check-btn {
+
+.setup-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.setup-card h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.setup-card .sub {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.field { margin-bottom: 1rem; }
+
+.field label {
   display: block;
-  margin: 1.5rem auto 0;
-  padding: 0.65rem 2.2rem;
-  background: var(--btn-bg);
-  color: var(--btn-txt);
-  border: none;
-  border-radius: 2px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  cursor: pointer;
-  letter-spacing: 0.3px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--text);
 }
-.check-btn:hover { background: var(--btn-hover); }
-.check-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-#scorebox { text-align: center; margin: 2rem 0 0.5rem; }
-#score { font-size: 2rem; font-weight: bold; letter-spacing: 1px; }
-#score.pass { color: var(--c-ok); }
-#score.fail { color: var(--c-wr); }
-#verdict { color: var(--dim); font-size: 0.8rem; margin-top: 0.3rem; }
+
+.field label .req { color: #cf222e; }
+
+.field input {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.1s, box-shadow 0.1s;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(9,105,218,0.12);
+}
+
+.field input.invalid {
+  border-color: #cf222e;
+  box-shadow: 0 0 0 3px rgba(207,34,46,0.1);
+}
+
+.field input.valid { border-color: #1a7f37; }
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: #cf222e;
+  margin-top: 0.3rem;
+  display: none;
+}
+
+.field-error.show { display: block; }
+
+.generate-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.55rem 1rem;
+  background: #1a7f37;
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(31,35,40,0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.generate-btn:hover { background: #116329; }
+.generate-btn:active { background: #0d4a20; }
+
+/* ── Guide screen ─────────────────────────────────────── */
+#guide-screen { display: none; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  gap: 0.5rem;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  color: var(--text);
+}
+
+.back-btn {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.back-btn:hover { background: var(--surface); }
+
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--accent);
+  width: 0%;
+  z-index: 100;
+  transition: width 0.08s;
+}
+
+/* ── Layout ───────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── TOC ──────────────────────────────────────────────── */
+.toc {
+  position: sticky;
+  top: 41px;
+  height: calc(100vh - 41px);
+  overflow-y: auto;
+  padding: 1rem 0.75rem;
+  border-right: 1px solid var(--border);
+  font-size: 0.78rem;
+  scrollbar-width: thin;
+}
+
+.toc-heading {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.toc ul { list-style: none; }
+
+.toc a {
+  display: block;
+  padding: 0.22rem 0.4rem;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 4px;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+
+.toc a:hover { color: var(--text); background: var(--surface); }
+.toc a.active { color: var(--accent); border-left-color: var(--accent); background: #dbeafe; }
+
+.toc .h3 a { padding-left: 1rem; font-size: 0.74rem; }
+
+/* ── Content ──────────────────────────────────────────── */
+.content {
+  padding: 2rem 2.5rem 4rem;
+  min-width: 0;
+  max-width: 820px;
+}
+
+.content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.content h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 2rem 0 0.6rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--text);
+}
+
+.content h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 1rem 0 0.4rem;
+}
+
+.content p { margin-bottom: 0.75rem; }
+
+.content ul, .content ol {
+  margin: 0.4rem 0 0.8rem 1.5rem;
+}
+
+.content li { margin-bottom: 0.25rem; }
+.content li p { margin-bottom: 0.25rem; }
+
+/* Code */
+.content pre {
+  background: var(--code-bg) !important;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0.6rem 0 1rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  position: relative;
+}
+
+/* override hljs github theme bg to match */
+.content pre code.hljs { background: transparent !important; padding: 0 !important; }
+.content pre code { font-family: var(--mono) !important; font-size: 0.8rem !important; }
+
+.content code {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.content pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+/* Copy button */
+.code-wrap { position: relative; }
+.copy-btn {
+  position: absolute;
+  top: 0.4rem; right: 0.4rem;
+  font-size: 0.7rem;
+  font-family: var(--sans);
+  padding: 0.15rem 0.45rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.code-wrap:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { color: var(--text); }
+.copy-btn.ok { color: #1a7f37; border-color: #1a7f37; }
+
+/* Blockquotes */
+.content blockquote {
+  border-left: 3px solid var(--warn-br);
+  background: var(--warn-bg);
+  padding: 0.65rem 0.9rem;
+  margin: 0.75rem 0;
+  border-radius: 0 4px 4px 0;
+}
+.content blockquote p { margin-bottom: 0.3rem; }
+.content blockquote p:last-child { margin-bottom: 0; }
+
+/* nested bq = red warning */
+.content blockquote blockquote {
+  border-left-color: #cf222e;
+  background: #ffebe9;
+  margin-top: 0.4rem;
+}
+
+/* Tables */
+.content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0 1.25rem;
+  font-size: 0.83rem;
+}
+.content th {
+  background: var(--surface);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+}
+.content td {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+.content tr:nth-child(even) td { background: var(--surface); }
+
+/* HR */
+.content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+/* Links */
+.content a { color: var(--accent); }
+.content a:hover { text-decoration: underline; }
+
+/* Checkboxes */
+.content input[type=checkbox] { width: 13px; height: 13px; margin-right: 0.35rem; cursor: pointer; }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .content { padding: 1.25rem 1rem 3rem; }
+}
+
+/* Print */
+@media print {
+  .topbar, .toc, #progress-bar { display: none !important; }
+  .layout { grid-template-columns: 1fr; }
+  .content { max-width: 100%; padding: 0; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-row">
-    <div>
-      <h1>AWS CLF-C02 Practice Quiz</h1>
-      <p class="sub">50 questions &nbsp;·&nbsp; MCQ = one correct answer &nbsp;·&nbsp; MAQ = select ALL that apply</p>
-    </div>
-    <button class="theme-toggle" id="themetoggle" onclick="toggleTheme()"></button>
-  </div>
-</header>
+<div id="progress-bar"></div>
 
-<div id="scorebox">
-  <div id="score"></div>
-  <div id="verdict"></div>
+<!-- SETUP -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <h1>ET0740 LAB3 &mdash; Guide Generator</h1>
+    <p class="sub">Enter your details to generate a personalised build guide with every resource name, CIDR and initials pre-filled.</p>
+
+    <div class="field">
+      <label>Full name <span class="req">*</span></label>
+      <input type="text" id="in-name" placeholder="Abinaash Abirama Sundaram" autocomplete="off">
+      <div class="field-error" id="err-name">Please enter your full name.</div>
+    </div>
+
+    <div class="field">
+      <label>Admin number <span class="req">*</span></label>
+      <input type="text" id="in-admin" placeholder="p2520225" maxlength="8" autocomplete="off">
+      <div class="field-hint">Lowercase p + exactly 7 digits. e.g. p2520225</div>
+      <div class="field-error" id="err-admin">Must be p followed by exactly 7 digits.</div>
+    </div>
+
+    <div class="field">
+      <label>Class index number <span class="req">*</span></label>
+      <input type="number" id="in-index" placeholder="12" min="1" max="60">
+      <div class="field-hint">Your serial number in class (x in 10.x.0.0/16).</div>
+      <div class="field-error" id="err-index">Enter a number between 1 and 60.</div>
+    </div>
+
+    <div class="field">
+      <label>Your initials <span class="req">*</span></label>
+      <input type="text" id="in-initials" placeholder="AAS" maxlength="6" autocomplete="off">
+      <div class="field-hint">Shown on the Load Test page. e.g. AAS</div>
+      <div class="field-error" id="err-initials">2 to 6 uppercase letters.</div>
+    </div>
+
+    <button class="generate-btn" onclick="gen()">Generate guide &rarr;</button>
+  </div>
 </div>
 
-<div id="quiz"></div>
+<!-- GUIDE -->
+<div id="guide-screen">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="chip" id="chip-admin">p2520225</span>
+      <span class="chip" id="chip-cidr">10.12.0.0/16</span>
+      <span class="chip" id="chip-init">AAS</span>
+      <span id="chip-name" style="color:var(--muted);font-size:0.78rem"></span>
+    </div>
+    <button class="back-btn" onclick="back()">&larr; Edit details</button>
+  </div>
 
-<button class="check-btn" id="checkbtn" onclick="check()">Check Answers</button>
+  <div class="layout">
+    <nav class="toc">
+      <div class="toc-heading">Contents</div>
+      <ul id="toc-ul"></ul>
+    </nav>
+    <main class="content" id="content"></main>
+  </div>
+</div>
 
 <script>
-const Q = [
-  // 1
-  { type:'MCQ',
-    q:'A common exam trap states that the customer "owns the network-connected hardware and AWS provisions what is needed." Which statement CORRECTLY flips this?',
-    opts:[
-      'The customer leases dedicated rack space inside AWS data centres and AWS manages provisioning.',
-      'AWS owns and maintains the physical hardware; the customer provisions and uses resources over the internet.',
-      'Hardware ownership is shared — AWS owns compute hardware but customers own storage hardware.',
-      'The customer owns hardware in their chosen Region; AWS owns it everywhere else.'
-    ], ans:[1] },
+const RAW = "# ET0740 LAB3 - Complete Build Guide (Page 1 -> End)\n\n**You:** Abinaash Abirama Sundaram | **Admin:** p2520225 | **Initials:** AAS | **Index (x):** 12\n**VPC CIDR:** `10.12.0.0/16` | **Region:** us-east-1 (N. Virginia) | **Lab:** AWS Academy Learner Lab\n\nOne document, whole assignment. Part 1 (network -> lab-db v1) is pages 1-3; Part 2 (AdminServer -> ELB/ASG) is pages 4-8. Follow top to bottom.\n\n**Rule 0:** top-right of the console must read **N. Virginia us-east-1** on every screen and every screenshot. If it doesn't, switch it now and never touch it again. Learner Lab only permits us-east-1 and us-west-2; build everything in us-east-1.\n\n---\n\n## THE PICTURE (what the PDF diagram is asking for, in your numbers)\n\n```\nAWS Cloud / Region us-east-1 / VPC p2520225-vpc  (10.12.0.0/16)\n|\n|-- Availability Zone A (us-east-1a)          |  MIDDLE (spans both AZs)     |-- Availability Zone B (us-east-1b)\n|                                             |                              |\n|   Public subnet 1   10.12.0.0/24            |   Internet Gateway           |   Public subnet 2   10.12.2.0/24\n|     -> NAT gateway                          |   Application Load Balancer  |\n|                                             |   Auto Scaling group  -------+---> Web Instances live in\n|   Private subnet 1  10.12.1.0/24            |                              |       the two PRIVATE subnets\n|     -> HelloWebPage / ASG web instance      |                              |   Private subnet 2  10.12.3.0/24\n```\n\nKey reading of the picture:\n- **ONE NAT gateway**, in Public subnet 1 (AZ A). Both private subnets route out through it. (The diagram shows a single NAT - so a single NAT is correct for this assignment. Private-subnet-2 in AZ B reaches the internet via cross-AZ NAT. That's fine and intended.)\n- **ALB is public / internet-facing**, spanning both public subnets.\n- **The auto-scaled web instances live in the PRIVATE subnets**, behind the ALB.\n- **WebServer1 (from Lab 2) goes in Public subnet 1** - it's the template you'll bake the ASG AMI from later, and the SSH/initials target. It is NOT the same as the auto-scaled instances.\n\n## ADDRESSING (no overlaps - this is correct, don't second-guess it)\n\n| Diagram label | Your subnet name | AZ | CIDR | Range |\n|---|---|---|---|---|\n| Public subnet 1 | `p2520225-public-subnet-1` | us-east-1a | `10.12.0.0/24` | 10.12.0.0 - 10.12.0.255 |\n| Private subnet 1 | `p2520225-private-subnet-1` | us-east-1a | `10.12.1.0/24` | 10.12.1.0 - 10.12.1.255 |\n| Public subnet 2 | `p2520225-public-subnet-2` | us-east-1b | `10.12.2.0/24` | 10.12.2.0 - 10.12.2.255 |\n| Private subnet 2 | `p2520225-private-subnet-2` | us-east-1b | `10.12.3.0/24` | 10.12.3.0 - 10.12.3.255 |\n\nThe VPC `10.12.0.0/16` is the whole 10.12.x.x space. Each subnet is a distinct /24 slice inside it. The console will show you the VPC's /16 while you type a subnet - that's it telling you the allowed range, NOT a conflict warning. Subnets fitting inside the VPC is mandatory. AWS only rejects two *subnets* that overlap *each other*, which none of these do.\n\n---\n\n## STARTING OVER - clean the slate first (if you have leftovers)\n\nIf a half-built `p2520225-vpc` (or old NAT/instances) is still in the lab from a previous attempt, either reuse it as-is, or delete it cleanly first. **Delete in this order** (AWS blocks deletion if dependencies still hang off a resource):\n\n1. Terminate any EC2 instances (`p2520225-*`) - EC2 -> Instances -> Instance state -> Terminate.\n2. Delete the RDS `lab-db` (RDS -> Databases -> Actions -> Delete, no snapshot).\n3. Delete the NAT gateway (VPC -> NAT gateways). Wait for `Deleted`.\n4. Release its Elastic IP (EC2 -> Elastic IPs -> Actions -> Release).\n5. Detach + delete the Internet gateway (VPC -> Internet gateways -> Actions -> Detach, then Delete).\n6. Delete the 4 subnets, then the 2 custom route tables (VPC).\n7. Delete the VPC last.\n\nIf the lab is clean already, skip this and go to Phase 0.\n\n---\n\n## PHASE 0 - Harvest user data FIRST\n\nYou need three scripts: **Lab 2** (WebServer1), **Lab 3** (HelloWebPage), and **Lab 5** (AdminServer, used on page 4). Lab 2 and Lab 3 are below. **Lab 5 is the one everyone gets stuck on - see the box after the Lab 3 script for why, and what it actually is.**\n\n**How to get any lab's user data (this IS a graded step - screenshot it):** open the lab in AWS Academy -> EC2 -> Instances -> select the lab's web server -> if running, **Instance state -> Stop** -> wait `stopped` -> **Actions -> Instance settings -> Edit user data** -> copy the text out.\n\n**Lab 2 script (goes on WebServer1) - paste EXACTLY. Do NOT modernize the `chkconfig`/`service` lines; the PDF wants Lab 2's user data verbatim and it runs fine on AL2023:**\n```bash\n#!/bin/bash\n# Install Apache Web Server and PHP\ndnf install -y httpd wget php mariadb105-server\n# Download Lab files\nwget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-100-ACCLFO-2/2-lab2-vpc/s3/lab-app.zip\nunzip lab-app.zip -d /var/www/html/\n# Turn on web server\nchkconfig httpd on\nservice httpd start\n```\n\n**Lab 3 script (goes on HelloWebPage):**\n```bash\n#!/bin/bash\ndnf install -y httpd\nsystemctl enable httpd\nsystemctl start httpd\necho '<html><h1>Hello From Your Web Server!</h1></html>' > /var/www/html/index.html\n```\n\n**Lab 5 script (goes on AdminServer) - READ THIS, it's the one that confuses everyone:**\n\n> You will NOT find this script printed anywhere in the Lab 5 instructions. In Lab 5 the \"Web Server 1\" is **pre-built for you** by the lab (unlike Lab 2, where you launch it yourself), so its user data lives in the instance's metadata, not the lab PDF. Extracting it IS the graded \"you have to find out how to obtain the User Data\" task.\n\n**How to obtain it (do this in the Lab 5 environment, screenshot it - graded):**\n- Console route: launch Lab 5 -> EC2 -> Instances -> select **Web Server 1** -> if running, Stop it -> **Actions -> Instance settings -> Edit user data** -> copy the text. Screenshot this screen.\n- OR from inside the instance (nicer evidence), via IMDSv2:\n  ```bash\n  TOKEN=$(curl -sX PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\")\n  curl -s -H \"X-aws-ec2-metadata-token: $TOKEN\" http://169.254.169.254/latest/user-data\n  ```\n\n**What it actually does:** installs Apache + PHP and downloads the lab app, which contains **`rds.conf.php`** and the RDS / Address Book page. Confirmed: this is the SAME app already on your WebServer1 (the Lab 2 `lab-app.zip` contains `rds.conf.php`, `rds.php`, and a nav with Load Test + RDS tabs). The default `rds.conf.php` first line is exactly what the LAB3 PDF tells you to edit:\n```php\n<?php $RDS_URL=\"\"; $RDS_DB=\"\"; $RDS_user=\"\"; $RDS_pwd=\"\"; ?>\n```\n\n**The AWS reference (old) Lab 5 user data looks like this** - Amazon-Linux-1 syntax (`yum`, `/etc/init.d`, `php-mysql`). Do NOT paste it as-is; it fails on the Linux 2023 AMI the assignment requires:\n```bash\n#!/bin/bash -ex\nyum -y update\nyum -y install httpd php mysql php-mysql\nchkconfig httpd on\n/etc/init.d/httpd start\ncd /var/www/html\nwget https://.../lab5-rds/scripts/lab-app.tgz\ntar xvfz lab-app.tgz\nchown apache:root /var/www/html/rds.conf.php\n```\n\n**THE GOTCHA (verified by inspecting the app source):** the *old* lab app (`2-lab2-vpc/s3/lab-app.zip`) is PHP-5-era - its DB pages call `mysql_connect()`, `mysql_query()`, `mysql_select_db()`, `mysql_error()`, `mysql_fetch_array()`, `mysql_close()`. Those six functions were **removed in PHP 7**, and the Linux 2023 AMI ships **PHP 8**. So that app installs fine, the site loads, the Load Test page works - but the **RDS / Address Book page dies (blank / 500) the instant it touches the database.** That is the trap.\n\n**THE FIX - use the PHP-7 app, not the old one.** AWS ships a purpose-built, `mysqli`-native port at **`lab-app-php7.zip`**. Same pages, same `rds.conf.php`, same Load Test + RDS tabs - but every DB call is `mysqli_*`, so it runs on PHP 8 with **no shim and no patching.** (Verified: the php7 zip contains zero dead `mysql_*` calls.) This is the one-file difference that makes AdminServer \"just work\".\n\n**DEFINITE, SURE-TO-WORK AdminServer user data (paste this exactly):**\n\n> **Why the friend's script silently fails:** it uses `#!/bin/bash -ex` where `-e` means \"exit the entire script on any error\", and starts with `dnf update -y`. On a fresh EC2 boot the network stack isn't always ready instantly - `dnf update` can time out on the repo metadata fetch, which counts as an error, and `-e` kills every line that follows. `httpd`, PHP, the zip download - none of it runs. The instance boots cleanly with `2/2 checks passed` (that checks EC2 itself, not Apache) while being silently empty. This is exactly what happened in the real lab session: the cloud-init log showed `Curl error (28): Timeout` on the `dnf update` line, then `Cloud-init finished` with nothing installed. The fix is to drop `dnf update`, add a boot-network-ready wait, and not use `-e`.\n\n```bash\n#!/bin/bash\n# AdminServer - bulletproof user data for Amazon Linux 2023 / PHP 8\n# Deliberately NO \"#!/bin/bash -ex\":\n#   -e would exit the whole script if dnf times out (kills httpd install silently)\n#   -x just spams the log with noise\n# Deliberately NO \"dnf update -y\":\n#   Takes ages, can time out on boot before network is stable, and is not needed\n#   for the assignment - the packages we install are already current enough.\n\n# Give the EC2 network stack time to fully initialize before dnf hits the repos.\n# Without this, on a busy Learner Lab day dnf can time out on the metadata fetch.\nsleep 15\n\n# Single dnf call - faster than two calls and less chance of a partial-install state.\n# php-mysqli = the PHP 8 mysqli driver (replaces the removed mysql_ functions)\n# mariadb105 = the mysql CLI client (needed for endpoint testing + addressbook.sql import)\ndnf install -y httpd wget php php-mysqli php-json mariadb105 unzip\n\n# Enable and start before downloading the app.\n# If the download/unzip fails for any reason, httpd is still running\n# so the health check path \"/\" returns SOMETHING rather than a connection refused.\nsystemctl enable httpd\nsystemctl start httpd\n\n# Download and deploy the PHP-7-compatible lab app.\n# This version uses mysqli natively - no shim needed, works on PHP 8 out of the box.\ncd /var/www/html\nwget -q https://aws-tc-largeobjects.s3.amazonaws.com/CUR-TF-100-ACCLFO-2/lab5-rds/lab-app-php7.zip\nunzip -o lab-app-php7.zip -d /var/www/html/\nchown apache:root /var/www/html/rds.conf.php\n\n# Restart so Apache picks up the new PHP files.\nsystemctl restart httpd\n```\nThat installs Apache + PHP 8 + the `mysqli` driver (`php-mysqli`) + the `mysql` client (`mariadb105-server`), deploys the **php7** app, and makes `rds.conf.php` writable. No shim, nothing to patch.\n\n**After it launches, SSH in and do 3 things (full detail in Phase 8 / Phase 11):**\n```bash\n# 1. Point the app at your RDS primary (the PDF's rds.conf.php step)\nsudo nano /var/www/html/rds.conf.php\n#    first line -> <?php $RDS_URL=\"lab-db.xxxx.us-east-1.rds.amazonaws.com\"; $RDS_DB=\"lab\"; $RDS_user=\"main\"; $RDS_pwd=\"lab-password\"; ?>\n\n# 2. Create the address table once (editing the file by hand skips the web form that would create it)\nmysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab < /var/www/html/sql/addressbook.sql\n\n# 3. Reload\nsudo systemctl restart httpd\n```\nThen open the RDS tab -> the Address Book renders -> **Add Contact** -> add your 2 records.\n\n> Still extract and screenshot YOUR Lab 5 instance's actual user data for the graded \"how to obtain\" evidence (console **Edit user data**, or the IMDSv2 `curl` above). Your Lab 5 instance almost certainly already uses this `lab-app-php7.zip` - so what you paste and what you screenshot match.\n\n---\n\n## PHASE 1 - VPC + Networking\n\n### 1.1 Create the VPC\n1. Console search bar -> **VPC** -> open the VPC console.\n2. Left sidebar -> **Your VPCs** -> **Create VPC** (top right).\n3. **Resources to create:** **VPC only** (NOT \"VPC and more\" - you need to name each piece yourself).\n4. **Name tag:** `p2520225-vpc`\n5. **IPv4 CIDR block:** IPv4 CIDR manual input -> `10.12.0.0/16`\n6. **IPv6:** No IPv6 CIDR block. **Tenancy:** Default.\n7. **Create VPC.**\n8. Select `p2520225-vpc` -> **Actions -> Edit VPC settings** -> tick **Enable DNS hostnames** -> **Save**.\n   > Do this now. Skipping it makes the RDS endpoint and ALB DNS resolve inconsistently later.\n\n### 1.2 Create the 4 subnets\n1. Left sidebar -> **Subnets** -> **Create subnet**.\n2. **VPC ID:** `p2520225-vpc`.\n3. Fill subnet 1, then **Add new subnet** for each of the other three:\n\n   | Subnet name | AZ | IPv4 CIDR |\n   |---|---|---|\n   | `p2520225-public-subnet-1` | us-east-1a | `10.12.0.0/24` |\n   | `p2520225-private-subnet-1` | us-east-1a | `10.12.1.0/24` |\n   | `p2520225-public-subnet-2` | us-east-1b | `10.12.2.0/24` |\n   | `p2520225-private-subnet-2` | us-east-1b | `10.12.3.0/24` |\n4. **Create subnet.**\n5. Turn on auto public IP for the **two public subnets only**:\n   - Select `p2520225-public-subnet-1` -> **Actions -> Edit subnet settings** -> tick **Enable auto-assign public IPv4 address** -> **Save**.\n   - Repeat for `p2520225-public-subnet-2`.\n   - **Leave both private subnets OFF.**\n\n### 1.3 Internet gateway\n1. Left sidebar -> **Internet gateways** -> **Create internet gateway**.\n2. **Name tag:** `p2520225-igw` -> **Create**.\n3. On the IGW page -> **Actions -> Attach to VPC** -> `p2520225-vpc` -> **Attach internet gateway**.\n\n### 1.4 NAT gateway  (new AWS wizard - read this)\n> AWS added an **\"Availability mode\"** step (Regional / Zonal) in Nov 2025. Choose **Zonal**. It matches the PDF diagram (one NAT inside Public subnet 1) and the deck's route-table slides. **Do NOT pick Regional** - Regional doesn't live in a subnet, auto-scales NAT across AZs, and muddies both your diagram and your Learner Lab budget.\n\n1. Left sidebar -> **NAT gateways** -> **Create NAT gateway**.\n2. **Name:** `p2520225-natgw`\n3. **Availability mode:** click **Zonal**. (The form changes; a **Subnet** field now appears - Zonal is subnet-level.)\n4. **Subnet:** `p2520225-public-subnet-1`\n5. **Connectivity type:** Public\n6. **Elastic IP allocation:** leave **Automatic** (AWS allocates the EIP). If your wizard instead shows an old **Allocate Elastic IP** button, click that.\n7. **Create NAT gateway.**\n8. **WAIT for State = Available (2-4 min)** before launching anything into a private subnet, or HelloWebPage's script can't reach the internet and you get a blank page.\n9. Tag the EIP afterward: EC2 -> **Elastic IPs** -> select the new one -> add tag `Name = p2520225-eip-natgw`. (Cosmetic, not graded - Automatic allocation won't let you name it during creation.)\n   > The NAT gateway is your biggest idle cost. If you leave for more than a day, delete it + release the EIP (see end note).\n\n### 1.5 Route tables  (the `local` route already exists - do NOT touch it)\n> Every route table is auto-created with a `10.12.0.0/16 -> local` route (Route Origin: CreateRouteTable). That is what lets everything inside the VPC talk. **Never edit or delete it.** On the Edit routes screen you click **Add route** to add a SECOND row next to it. After saving, each table shows TWO routes: `local` (untouched) + your `0.0.0.0/0`.\n>\n> The breadcrumb shows only the table ID (`rtb-xxxx`), not the name - confirm you opened the right table via the **Name** column first. **Public -> IGW, Private -> NAT. Crossing these is the single most common way this lab breaks** (private boxes lose internet, or public ones become unreachable).\n\n**Public route table:**\n1. Left sidebar -> **Route tables** -> **Create route table** -> Name `p2520225-rtb-public`, VPC `p2520225-vpc` -> **Create**.\n2. Select it (check the name) -> **Routes** tab -> **Edit routes**. Leave the `local` row. Click **Add route**: Destination `0.0.0.0/0`, Target **Internet Gateway** -> `p2520225-igw` -> **Save changes**.\n3. **Subnet associations** tab -> **Edit subnet associations** -> tick **`p2520225-public-subnet-1`** and **`p2520225-public-subnet-2`** -> **Save associations**.\n\n**Private route table:**\n1. **Create route table** -> Name `p2520225-rtb-private`, VPC `p2520225-vpc` -> **Create**.\n2. Select it (check the name) -> **Routes** tab -> **Edit routes**. Leave the `local` row. Click **Add route**: Destination `0.0.0.0/0`, Target **NAT Gateway** -> `p2520225-natgw` -> **Save changes**.\n3. **Subnet associations** tab -> **Edit subnet associations** -> tick **`p2520225-private-subnet-1`** and **`p2520225-private-subnet-2`** -> **Save associations**.\n\n### 1.6 Screenshot the proof\nLeft sidebar -> **Your VPCs** -> `p2520225-vpc` -> **Resource map** tab. Screenshot it. Best single networking-evidence shot you'll get - shows the subnets fanning correctly into IGW and NAT.\n\n---\n\n## PHASE 2 - Security Groups\n\nBuild all four in THIS order - the last two point at the first two, so they must exist first. Get your laptop's public IP before you start (google \"what is my ip\"); Source = **My IP** fills it automatically as a /32.\n\n### The skeleton (identical for all four)\n1. VPC console -> **Security groups** -> **Create security group** (top right).\n2. **Security group name:** type the name.\n3. **Description:** short text (required - it won't save without it).\n4. **VPC:** change it to **`p2520225-vpc`**. <-- THE #1 GOTCHA. This field defaults to your *default* VPC. Fix it every single time or your rules attach to the wrong network and nothing connects.\n5. **Inbound rules -> Add rule.** Each row = **Type**, Port (auto-fills from Type), **Source**, **Description**.\n6. **Outbound rules:** leave default (All traffic -> 0.0.0.0/0). Never change it.\n7. **Create security group.**\n\n### How the Source field works (this is the bit people fumble)\nThe Source cell is a dropdown + a search box:\n- **My IP** -> auto-fills your laptop's /32. Use for SSH and RDP.\n- **Anywhere-IPv4** -> 0.0.0.0/0. (Not used today except the ALB later.)\n- **Custom** -> then click the **search box** to its right and either:\n  - type a **CIDR** by hand (e.g. `10.12.0.0/16`), OR\n  - type a **security group name** -> the dropdown lists your SGs -> **click** the `sg-xxxx (p2520225-sg-...)` entry.\n\nSo \"Source = another security group\" means: Source type **Custom** -> search box -> pick the SG from the dropdown. If you see a box demanding a raw IP, you haven't set the type to Custom yet.\n\n### 2.1 `p2520225-sg-web`  (WebServer1)\n- Description: `WebServer1 SSH and HTTP from my laptop`\n- **Inbound** (Add rule x2):\n  - **SSH** (22), Source **My IP**, Description `PuTTY from laptop`\n  - **HTTP** (80), Source **My IP**, Description `verify load test page`\n- **Create.**\n\n### 2.2 `p2520225-sg-windows`  (build before hellowebpage - it references this)\n- Description: `RDP to Windows Server from my laptop`\n- **Inbound:** **RDP** (3389), Source **My IP**, Description `RDP from laptop`\n- **Create.**\n\n### 2.3 `p2520225-sg-hellowebpage`\n- Description: `Private web server - reachable only from inside the VPC`\n- **Inbound** (Add rule x2):\n  - **Rule 1 (from the Windows box):** Type **HTTP**, Source dropdown -> **Custom** -> click the search box -> type `p2520225-sg-windows` -> **click it** in the list (box shows `sg-0abc... (p2520225-sg-windows)`), Description `from Windows jump host`. This is the graded path.\n  - **Rule 2 (from inside the VPC):** Type **HTTP**, Source -> **Custom** -> type `10.12.0.0/16` by hand (this one is a CIDR, not an SG), Description `from inside VPC`. Lets you curl it from AdminServer as backup.\n- Outbound: leave default - it needs it, the script does `dnf install httpd` out through the NAT.\n- **Create.**\n\n### 2.4 `p2520225-sg-db`  (RDS lab-db)\n- Description: `MySQL from web server`\n- **Inbound:** Type **MySQL/Aurora** (pick from the Type dropdown - it auto-sets port **3306**, don't type the port), Source -> **Custom** -> search box -> select `p2520225-sg-web`, Description `from web`\n- **Create.**\n  > You'll add a second 3306 rule sourced from `sg-admin` on page 4. Leave it single-rule for now.\n\n### Who-talks-to-whom (your A.2 \"least privilege\" story for the deck)\n\n| SG | Lets in | On | Why |\n|---|---|---|---|\n| `sg-web` | your laptop only | 22, 80 | you SSH + check the page; nobody else |\n| `sg-windows` | your laptop only | 3389 | RDP jump host |\n| `sg-hellowebpage` | `sg-windows` + VPC range | 80 | private page reached only from inside, not the internet |\n| `sg-db` | `sg-web` | 3306 | DB reachable only from the web tier, never directly |\n\nWhat graders reward: you **referenced security groups, not wide-open CIDRs**, and admin ports (22/3389) are locked to your IP - not `0.0.0.0/0` everywhere.\n\n### Notes\n- An SG is **bound to its VPC permanently**. If one shows the wrong VPC after creation, delete and recreate - you can't move it.\n- **My IP = your IP right now.** Change wifi or toggle a VPN and SSH/RDP silently stop. Fix later via the SG -> Edit inbound rules -> re-pick My IP.\n- Verify all four: Security groups list -> the **VPC ID** column reads `p2520225-vpc` on all four. Screenshot the list + each inbound tab for A.2 evidence.\n\n`sg-alb`, `sg-asg-web`, `sg-admin` are page 4/7 - skip today.\n\n---\n\n## PHASE 3 - Key Pairs\n\nEC2 console -> **Key pairs** -> **Create key pair** (twice):\n\n1. Name `p2520225-linux-key`, Type **RSA**, Format **.ppk** -> **Create** (downloads `.ppk`). **Screenshot the create dialog** - the PDF grades \"create a new key pair ... additional research\".\n2. Name `p2520225-windows-key`, Type **RSA**, Format **.pem** -> **Create**.\n\nMove both into a folder you won't lose. If you ever need to convert a .pem to .ppk: PuTTYgen -> Load -> Save private key.\n\n---\n\n## PHASE 4 - WebServer1 + SSH + Initials  (A.4, 10 marks)\n\n### 4.1 Launch\n1. EC2 -> **Instances** -> **Launch instances**.\n2. **Name:** `p2520225-WebServer1`\n3. **AMI:** Quick Start -> **Amazon Linux** tile -> dropdown = **Amazon Linux 2023 AMI** (Free tier eligible). Note the `ami-0...` ID for your deck. Arch **64-bit (x86)**.\n4. **Instance type:** `t3.micro`\n5. **Key pair:** `p2520225-linux-key`\n6. **Network settings -> Edit:**\n   - VPC `p2520225-vpc`\n   - Subnet `p2520225-public-subnet-1`\n   - Auto-assign public IP **Enable**\n   - Firewall -> **Select existing security group** -> `p2520225-sg-web`\n7. **Storage:** 8 GiB gp3\n8. **v Advanced details:**\n   - **IAM instance profile:** `LabInstanceProfile`\n   - **User data** (scroll down): paste the **Lab 2** script from Phase 0. Plain text - AWS base64-encodes it, don't encode it yourself.\n9. **Launch instance.**\n\n### 4.2 Verify\n- **Instances** -> wait for **Status check = 2/2**, then wait another 1-2 min (the script is still pulling `lab-app.zip`).\n- Select instance -> **Details** -> copy **Public IPv4 address**.\n- Browser -> `http://<public-ip>` -> the **Load Test** page with the Meta-Data table + Current CPU Load (matches the PDF screenshot). **Screenshot it (before the initials edit).**\n\n> Blank page? SSH in (4.3), then `sudo cat /var/log/cloud-init-output.log | tail -40`. If `unzip: command not found`: `sudo dnf install -y unzip`, redo the unzip, `sudo systemctl restart httpd`. If httpd down: `sudo systemctl enable --now httpd`.\n\n### 4.3 SSH in with PuTTY\nPuTTY does NOT ship with Windows - install it, then point it at your key.\n> Mac? There's no PuTTY. Use Terminal: `chmod 400 p2520225-linux-key.pem` then `ssh -i p2520225-linux-key.pem ec2-user@<public-ip>`. (You'd need the key in .pem, not .ppk - convert with PuTTYgen if needed.) The rest of this assumes Windows + .ppk.\n\n**Install PuTTY (skip if you have it):**\n1. Go to **putty.org** -> download the **64-bit MSI installer** -> run -> Next-Next-Finish. This installs both **PuTTY** (SSH client) and **PuTTYgen** (key tool).\n2. Start menu -> type **PuTTY** -> open it. The \"PuTTY Configuration\" window appears (tree on the left, fields on the right).\n\n**Get the public IP:** EC2 -> Instances -> click `p2520225-WebServer1` -> Details -> copy **Public IPv4 address** (the *public* one, not private).\n\n**Configure and connect:**\n1. **Session** (top of tree): **Host Name** = `ec2-user@<public-ip>`, **Port** = 22, Connection type SSH.\n2. Left tree -> **Connection** -> **Seconds between keepalives:** `30` (stops the session dropping mid-demo).\n3. Left tree -> expand **Connection -> SSH -> Auth -> Credentials** -> **Private key file for authentication** -> **Browse** -> select `p2520225-linux-key.ppk` -> Open.\n   > Older PuTTY: the path is **Connection -> SSH -> Auth** directly (no \"Credentials\" sub-item). Same Browse button.\n4. Scroll back up to **Session** -> in **Saved Sessions** type `p2520225-WebServer1` -> **Save** (so you can reload it instantly on camera).\n5. **Open** -> on the first-time **PuTTY Security Alert**, click **Accept** (it caches the server fingerprint).\n6. You land on `[ec2-user@ip-10-12-0-x ~]$`. The `10-12-0-` proves you're on the right box in your public subnet.\n7. **Screenshot** the Auth screen (showing the .ppk path) and the connected prompt.\n\n**If it won't connect:**\n- **Connection timed out** -> `sg-web` isn't allowing SSH from your *current* IP (it changed since you made the SG). EC2 -> Security Groups -> `p2520225-sg-web` -> Edit inbound rules -> SSH rule -> Source -> re-pick **My IP** -> Save. Retry.\n- **Connection refused** -> instance still booting, or you used the private IP. Wait for 2/2 checks, confirm the **Public** IPv4.\n- **No supported authentication / server refused our key** -> you skipped the Browse step, or wrong user. Must be `ec2-user` (not root, not ubuntu).\n- **Unable to use key file ... (OpenSSH SSH-2 private key)** -> you loaded a `.pem`, not a `.ppk`. PuTTYgen -> **Load** (filter: All Files) -> select the `.pem` -> **Save private key** -> use that `.ppk`.\n\n### 4.4 List root level  (graded, do it literally)\n```bash\nls -l /\n```\nScreenshot the full output.\n\n### 4.5 Locate + edit your initials\nLook at what grep finds BEFORE editing:\n```bash\nsudo grep -rn \"Load Test\" /var/www/html/\n```\nThen:\n```bash\nsudo cp /var/www/html/index.php /var/www/html/index.php.bak\nsudo grep -rl \"Load Test\" /var/www/html/ | xargs sudo sed -i 's/Load Test/Load Test by AAS/g'\nsudo grep -rn \"Load Test by AAS\" /var/www/html/\nsudo systemctl restart httpd\n```\n(The `grep -rl | xargs` line edits every file that contains the string, so it works even if the text lives somewhere other than `index.php`.)\n\nRefresh `http://<public-ip>` -> nav reads **Load Test by AAS**. **Screenshot with the URL bar visible.**\n\n### 4.6 Command evidence\n```bash\nhistory | tail -40\n```\nScreenshot it. That's the \"list of commands used\" + A.4 done.\n\n---\n\n## PHASE 5 - HelloWebPage  (Private Subnet 1)\n\n**Prereq:** NAT gateway = **Available** (VPC -> NAT gateways). Without it this script can't install Apache.\n\n### 5.1 Launch\n1. EC2 -> **Instances** -> **Launch instances**.\n2. **Name:** `p2520225-HelloWebPage`\n3. **AMI:** Amazon Linux 2023\n4. **Type:** `t3.micro`\n5. **Key pair:** `p2520225-linux-key`\n6. **Network -> Edit:**\n   - VPC `p2520225-vpc`\n   - Subnet **`p2520225-private-subnet-1`**\n   - Auto-assign public IP **Disable**\n   - Firewall -> Select existing -> `p2520225-sg-hellowebpage`\n7. **Storage:** 8 GiB gp3\n8. **v Advanced details:**\n   - **IAM instance profile:** `LabInstanceProfile` (mandatory - it's your ONLY way to a shell, there's no public IP)\n   - **User data:** paste the **Lab 3** script from Phase 0.\n9. **Launch instance.**\n10. Select it -> **Details** -> copy **Private IPv4** (`10.12.1.x`). Write it down - you need it on the Windows box.\n\n### 5.2 Verify (Session Manager - no public IP to SSH to)\n1. Select `p2520225-HelloWebPage` -> **Connect** -> **Session Manager** tab -> **Connect**.\n```bash\nsudo systemctl status httpd\ncurl http://localhost\n```\n`curl` must return `<html><h1>Hello From Your Web Server!</h1></html>`. Screenshot.\n\n> Session Manager greyed out? Instance -> **Actions -> Security -> Modify IAM role** -> `LabInstanceProfile` -> **Actions -> Reboot** -> wait ~2 min -> retry.\n\n### 5.3 The fail test (this is SUPPOSED to fail - it's the evidence)\nFrom your laptop browser: `http://10.12.1.x` -> times out (`ERR_CONNECTION_TIMED_OUT`). **Screenshot the failure with `10.12.1.x` in the address bar.** Half of A.5; the Windows box (Phase 6) proves the other half - that you CAN reach it from inside the VPC.\n\n---\n\n## PHASE 6 - WindowsServer + RDP  (A.5, 10 marks)\n\n### 6.1 Launch\n1. EC2 -> **Instances** -> **Launch instances**.\n2. **Name:** `p2520225-WindowsServer`\n3. **AMI:** **Browse more AMIs** -> search box: `Windows_Server-2016-English-Full-Base` -> pick the result named exactly **Microsoft Windows Server 2016 Base**, Owner **amazon**.\n   > The PDF says \"2016 **Base**\" - that's the Standard-edition image AWS labels \"Base\". Match it exactly; marks come off for non-compliance. The search also surfaces these - do NOT pick them:\n   > - **...2016 Datacenter...** (different, heavier edition - not what the spec names)\n   > - **...2016 Core** (no desktop GUI -> RDP gives you no GUI and Chrome can't run)\n   > - any **2019 / 2022**\n   > The word that matters is **Base**, and it should say **Full** (Full = desktop GUI; Core = command-line only). If ONLY Datacenter exists in your lab, tell me and we'll document the deviation - but Base is normally right there in Quick Start.\n4. **Type:** `t3.medium` (small chokes under RDP + Chrome)\n5. **Key pair:** **`p2520225-windows-key`** (the .pem)\n6. **Network -> Edit:**\n   - VPC `p2520225-vpc`\n   - Subnet `p2520225-public-subnet-1`\n   - Auto-assign public IP **Enable**\n   - Firewall -> Select existing -> `p2520225-sg-windows`\n7. **Storage:** 30 GiB gp3\n8. **Launch instance.** **Wait 4-6 min** before grabbing the password.\n\n### 6.2 Get the Administrator password\n1. Select `p2520225-WindowsServer` -> **Connect** -> **RDP client** tab.\n2. **Get password** -> **Upload private key file** -> `p2520225-windows-key.pem` -> **Decrypt password**.\n3. **Screenshot this** (evidence: \"new key pair for RDP\"). Copy the Public DNS, `Administrator`, and the password.\n\n### 6.3 RDP in\n- Windows laptop: Start -> **Remote Desktop Connection** (`mstsc`) -> **Show Options** (matches the PDF picture) -> Computer = the Public DNS -> **Connect** -> user `Administrator` + password -> accept the cert warning.\n- Mac: **Windows App** -> Add PC.\n- **Screenshot** the RDP dialog + the connected Windows desktop.\n\n### 6.4 Install Chrome (2016 Base ships only IE; IE ESC blocks downloads)\nPowerShell **as Administrator** on the Windows box:\n```powershell\n[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12\n$u=\"https://dl.google.com/tag/s/dl/chrome/install/googlechromestandaloneenterprise64.msi\"\nInvoke-WebRequest $u -OutFile \"$env:TEMP\\chrome.msi\" -UseBasicParsing\nStart-Process msiexec.exe -ArgumentList \"/i `\"$env:TEMP\\chrome.msi`\" /qn\" -Wait\n```\n\n### 6.5 The money shot\n1. Open **Chrome** on the Windows box -> `http://10.12.1.x` (HelloWebPage's private IP) -> **Hello From Your Web Server!** appears.\n2. Get ONE screenshot containing all of:\n   - Chrome showing the page + `http://10.12.1.x` in the URL bar\n   - The EC2 console showing `p2520225-WindowsServer`'s details\n   - A `cmd`/PowerShell `ipconfig` (proves this box is `10.12.0.x` - inside your VPC)\n   - Bonus: `Test-NetConnection 10.12.1.x -Port 80` -> `TcpTestSucceeded : True`\n\n**Slide explanation:** HelloWebPage (`10.12.1.x`) has no public IP and sits in Private subnet 1, whose route table points at the NAT, not the IGW - so the laptop times out. WindowsServer (`10.12.0.x`) is in Public subnet 1 of the SAME VPC and reaches it over the implicit `10.12.0.0/16 -> local` route, allowed because `sg-hellowebpage` permits TCP 80 from `sg-windows`. So I'm viewing the private page from inside the VPC through the Windows jump host.\n\n### 6.6 Then STOP it\nOnce captured: `p2520225-WindowsServer` -> **Instance state -> Stop instance**. Windows bills a licence surcharge, and you'll want the instance slot back for the Auto Scaling load test (9-instance cap). Don't terminate - you may want a retake.\n\n---\n\n## PHASE 7 - lab-db, version 1  (END OF PAGE 3)\n\nPage 3 wants the DB built **deliberately WITHOUT backups**, so on page 5 you can prove the read-replica option is greyed out. That \"not available\" screenshot is graded - do NOT enable backups here.\n\n### 7.1 DB subnet group\n1. Console -> **RDS** -> **Subnet groups** -> **Create DB subnet group**.\n2. **Name:** `p2520225-db-subnet-group`\n3. **Description:** `Private subnets for lab-db across two AZs`\n4. **VPC:** `p2520225-vpc`\n5. **Availability Zones:** tick **us-east-1a** and **us-east-1b**\n6. **Subnets:** tick **`10.12.1.0/24`** (private-1) and **`10.12.3.0/24`** (private-2)\n7. **Create.**\n   > It needs two AZs even for a single-AZ Free tier DB. Picking only private subnets is what puts the DB in the private tier.\n\n### 7.2 Create the database\n1. RDS -> **Databases** -> **Create database**.\n2. **Standard create**\n3. **Engine options:** **MySQL**\n4. **Templates:** **Free tier**\n5. **Settings:**\n   - DB instance identifier: `lab-db`\n   - Master username: `main`\n   - Credentials management: **Self managed**\n   - Master password: `lab-password` / Confirm: `lab-password`\n6. **Instance configuration:** Burstable classes -> **`db.t3.micro`**\n7. **Storage:** General Purpose SSD **(gp2)**, 20 GiB, **uncheck** storage autoscaling\n8. **Connectivity:**\n   - **Don't connect to an EC2 compute resource**\n   - VPC: `p2520225-vpc`\n   - DB subnet group: `p2520225-db-subnet-group`\n   - Public access: **No**\n   - VPC security group: **Choose existing** -> `p2520225-sg-db` (remove `default`)\n   - AZ: `us-east-1a`\n   - Port: 3306\n9. **Monitoring:** **UNCHECK \"Enable Enhanced monitoring\"** (PDF + Learner Lab both require it off)\n10. Expand **v Additional configuration:**\n    - Initial database name: `lab`\n    - **UNCHECK \"Enable automatic backups\"**  <-- the deliberate flaw. This is the whole point of the page 3 -> 5 sequence.\n    - **UNCHECK \"Enable encryption\"**\n    - Deletion protection: **off**\n11. **Create database.** 5-10 min to **Available**.\n\n### 7.3 Evidence\nSelect `lab-db` -> **Configuration** tab -> screenshot showing **Automated backups: Disabled**, Engine MySQL, Class db.t3.micro, and your subnet group.\n\n---\n\n## END OF PAGE 3 - checklist of what exists now\n\n- [ ] VPC `p2520225-vpc` (`10.12.0.0/16`) + DNS hostnames on\n- [ ] 4 subnets (public-1/2, private-1/2) with correct AZs + CIDRs\n- [ ] IGW `p2520225-igw` attached\n- [ ] NAT `p2520225-natgw` (Zonal, in public-subnet-1) Available + EIP\n- [ ] `p2520225-rtb-public` (local + 0.0.0.0/0 -> IGW) assoc. to both public subnets\n- [ ] `p2520225-rtb-private` (local + 0.0.0.0/0 -> NAT) assoc. to both private subnets\n- [ ] 4 SGs: sg-web, sg-windows, sg-hellowebpage, sg-db\n- [ ] 2 key pairs: linux .ppk, windows .pem\n- [ ] `p2520225-WebServer1` - Load Test page now \"Load Test by AAS\", SSH + root-listing + command evidence captured\n- [ ] `p2520225-HelloWebPage` - serving privately; laptop-fail + Windows-success both captured\n- [ ] `p2520225-WindowsServer` - RDP + Chrome + private-page proof captured, now STOPPED\n- [ ] `lab-db` v1 - backups OFF (intentionally), Available, config screenshot taken\n\n## Before you close the session\n- Running EC2: WebServer1 + HelloWebPage (+ WindowsServer if you didn't stop it). Cap is 9 - you're fine.\n- `lab-db` v1 has no replica yet, so you CAN stop it if pausing (RDS -> lab-db -> Actions -> Stop temporarily). If rolling straight into page 4, leave it up.\n- Leaving for >1 day? Delete `p2520225-natgw` + release `p2520225-eip-natgw` (biggest idle cost). On return: recreate the NAT (Zonal, public-subnet-1), then re-point `p2520225-rtb-private`'s `0.0.0.0/0` route at the new NAT ID (the old route goes to blackhole when the NAT is deleted).\n\n---\n\n# ============ PART 2: PAGE 4 -> END ============\n\n> You've finished Part 1: VPC, subnets, IGW, NAT, route tables, 4 SGs, 2 keys, WebServer1 (+ initials), HelloWebPage, WindowsServer, and `lab-db` v1 (backups OFF, Available). Region still reads **us-east-1**.\n\n## READ THIS BEFORE YOU TOUCH RDS - the sequencing trap\n\nThe PDF makes you build the DB **wrong first**, prove it's wrong, then rebuild it. Do the steps in exactly this order:\n\n```\n1. Launch p2520225AdminServer (Lab 5 user data)          <- can do anytime\n2. Try to make a read replica from lab-db v1 -> BLOCKED   <- SCREENSHOT (graded)\n3. State the setting that's missing                       <- SLIDE (graded)\n4. DELETE lab-db v1\n5. Recreate lab-db WITH automatic backups                 <- v2\n6. Create read replica \"lab-db-replica\"                   <- SCREENSHOT (graded)\n7. Point AdminServer at lab-db, add 2 records             <- SCREENSHOT (graded)\n8. Point AdminServer at lab-db-replica, verify 2 records  <- SCREENSHOT (graded)\n9. Change BOTH to Graviton (db.t4g.micro)                 <- SCREENSHOT (graded)\n10. Delete replica, stop lab-db (cost control)\n```\n\n**The hard constraint:** once `lab-db-replica` exists (step 6), AWS will NOT let you stop `lab-db` - a source with a replica bills continuously. So **do steps 5-10 in ONE sitting.** Don't start them unless you can finish.\n\n---\n\n## PHASE 8 - p2520225AdminServer (page 4)\n\n> PDF: \"configure and customize a Linux 2023 AMI EC2 instance at a Public Subnet to launch a webserver **pxxxxAdminServer** using the User Data of the WebServer 1 from Lab5.\"\n> Note the name has **NO hyphen** - `p2520225AdminServer`, exactly as the PDF writes `pxxxxAdminServer`. Do not \"fix\" it.\n\n### 8.1 First: add the admin rule to sg-db\nBack in Part 1 you left `p2520225-sg-db` with one rule (from `sg-web`). AdminServer needs its own SG and a matching DB rule.\n\n1. VPC -> **Security groups** -> **Create security group**.\n2. Name `p2520225-sg-admin`, Description `AdminServer SSH and HTTP from my laptop`, **VPC = `p2520225-vpc`**.\n3. **Inbound** (x2):\n   - **SSH** (22), Source **My IP**, Desc `PuTTY from laptop`\n   - **HTTP** (80), Source **My IP**, Desc `open the RDS app`\n4. **Create.**\n\n   > **CRITICAL - verify outbound rules immediately after creating `p2520225-sg-admin`.** Click the **Outbound rules** tab. You MUST see `All traffic | All | All | 0.0.0.0/0`. If it's missing or has been restricted, click **Edit outbound rules -> Add rule -> All traffic, Destination 0.0.0.0/0 -> Save.** Without this, `dnf install` can't reach the package mirrors, httpd never installs, and you get a browser timeout with zero useful error message. The instance shows 2/2 health checks (that checks EC2 itself, not Apache) and looks healthy while being completely empty inside. The bulletproof script below has a `sleep 15` to handle early-boot network delays, but it cannot overcome a missing outbound rule - that's a hard block.\n\n5. Now open **`p2520225-sg-db`** -> **Edit inbound rules** -> **Add rule**: **MySQL/Aurora** (3306), Source **Custom** -> search box -> `p2520225-sg-admin`, Desc `from AdminServer` -> **Save rules**.\n\n### 8.2 Launch AdminServer\n1. EC2 -> **Instances** -> **Launch instances**.\n2. **Name:** `p2520225AdminServer`  (no hyphen)\n3. **AMI:** Amazon Linux 2023\n4. **Type:** `t3.micro`\n5. **Key pair:** `p2520225-linux-key`\n6. **Network -> Edit:**\n   - VPC `p2520225-vpc`\n   - Subnet `p2520225-public-subnet-1`\n   - Auto-assign public IP **Enable**\n   - Firewall -> Select existing -> `p2520225-sg-admin`\n7. **Storage:** 8 GiB gp3\n8. **v Advanced details:**\n   - **IAM instance profile:** `LabInstanceProfile`\n   - **User data:** paste the **bulletproof AdminServer script from the Phase 0 Lab 5 box**. Key points: no `dnf update`, no `#!/bin/bash -ex`, has a `sleep 15` for network readiness, installs `php-mysqli` (the PHP 8 driver), and uses `lab-app-php7.zip` (native `mysqli`, not the old mysql_ app). Do NOT paste the friend's original script - it will silently fail on boot if the network isn't immediately ready. (Also extract + screenshot your own Lab 5 instance's user data for the graded \"how to obtain\" evidence.)\n9. **Launch instance.**\n\n### 8.3 Verify the app loads\n- Wait for **2/2 checks**, then `http://<adminserver-public-ip>`.\n- You should see the same app family as the Load Test page, but with an **RDS** tab in the nav.\n- Click **RDS** -> it errors (can't connect) because `rds.conf.php` is still blank. **That's expected** - screenshot it as your \"before\".\n\n> **If you get ERR_CONNECTION_TIMED_OUT instead of the app loading at all:** Apache was never installed. SSH in with PuTTY and run:\n> ```bash\n> sudo systemctl status httpd\n> ```\n> `Unit httpd.service could not be found` confirms it. Then check why:\n> ```bash\n> sudo tail -100 /var/log/cloud-init-output.log\n> ```\n> Look for `Curl error (28): Timeout was reached` on a `dnf` line, or just a premature `Cloud-init finished` with nothing installed. Fix the outbound rule on `p2520225-sg-admin` if it's missing (see step 4 above). Once internet is reachable, **cloud-init will NOT automatically retry** - `cloud-init status: done` means it ran once and stopped, not that it succeeded. Manually run the install (no `dnf update` - not needed and slow):\n> ```bash\n> sudo dnf install -y httpd wget php php-mysqli php-json mariadb105 unzip\n> sudo systemctl enable httpd && sudo systemctl start httpd\n> cd /var/www/html\n> sudo wget -q https://aws-tc-largeobjects.s3.amazonaws.com/CUR-TF-100-ACCLFO-2/lab5-rds/lab-app-php7.zip\n> sudo unzip -o lab-app-php7.zip -d /var/www/html/\n> sudo chown apache:root /var/www/html/rds.conf.php\n> sudo systemctl restart httpd\n> ```\n> Then `curl http://localhost` - you should get HTML back. Do not terminate and re-launch; you lose the public IP.\n>\n> **SSM \"i/o timeout\" errors:** this is a symptom of the same no-internet problem but is completely irrelevant to what you need. You don't need SSM here. Use PuTTY with your `.ppk` key. Ignore every SSM error message and don't spend time debugging it.\n\n---\n\n## PHASE 9 - Prove the replica is UNAVAILABLE (page 5, A.6)\n\n> PDF: \"Create a read replica from lab-db. Show that the option for the creation of the read replica of lab-db is not available.\"\n\n1. RDS -> **Databases** -> select **`lab-db`** -> **Actions** menu.\n2. **Create read replica** is **greyed out / disabled**.\n3. **Screenshot the open Actions dropdown** with the greyed-out entry clearly visible. Zoom the browser to 125% first so it's legible in the video.\n\n**Stronger second evidence (optional but impressive)** - CloudShell (icon top-right of console):\n```bash\naws rds create-db-instance-read-replica \\\n  --db-instance-identifier lab-db-replica \\\n  --source-db-instance-identifier lab-db \\\n  --region us-east-1\n```\nReturns: `InvalidDBInstanceState: Automated backups are not enabled ... set the backup retention period to a non-zero value.` **Screenshot that** - it names the exact missing setting for you.\n\n### 9.1 List the required setting (page 5 - graded slide)\n> PDF: \"List the setting(s) required to allow the creation of a read replica.\"\n\nPut this on a slide:\n\n**Required: automatic backups must be enabled on the source DB - i.e. the backup retention period must be a non-zero value (1-35 days).**\n\nSupporting detail:\n- Console location: **Additional configuration -> Backup -> \"Enable automatic backups\"**, retention >= 1 day.\n- API/CLI: the `BackupRetentionPeriod` parameter; `0` disables backups and blocks replicas.\n- **Why:** RDS MySQL replication is driven by the binary log. RDS only writes the binlog when automated backups are on. The replica is seeded from a snapshot then kept current from the binlog - no backups = no binlog = no replication source.\n\n---\n\n## PHASE 10 - Delete and rebuild lab-db WITH backups (page 5-6)\n\n### 10.1 Delete lab-db v1\n1. RDS -> **Databases** -> `lab-db` -> **Actions -> Delete**.\n2. **Create final snapshot?** uncheck. **Retain automated backups?** uncheck.\n3. Type `delete me` -> **Delete**.\n4. **Wait until it fully disappears** from the list (5-10 min). You cannot reuse the `lab-db` identifier until deletion completes.\n\n### 10.2 Recreate lab-db v2 (replica-capable)\nSame as Part 1 Phase 7, **except** the Additional configuration block. Full settings:\n\n1. RDS -> **Databases** -> **Create database** -> **Standard create**\n2. Engine **MySQL**, Templates **Free tier**\n3. DB instance identifier `lab-db`, Master username `main`, **Self managed**, password `lab-password` / confirm `lab-password`\n4. Instance config: Burstable -> **`db.t3.micro`**\n5. Storage: gp2, 20 GiB, autoscaling off\n6. Connectivity: **Don't connect to an EC2 compute resource**; VPC `p2520225-vpc`; DB subnet group `p2520225-db-subnet-group`; Public access **No**; existing SG **`p2520225-sg-db`** (remove default); AZ `us-east-1a`; port 3306\n7. Monitoring: **UNCHECK Enable Enhanced monitoring**\n8. **v Additional configuration:**\n   - Initial database name `lab`\n   - **CHECK \"Enable automatic backups\"**  <-- the fix\n   - Backup retention period: default (7 days)\n   - Backup window: **Choose a window** -> accept defaults\n   - **CHECK \"Enable replication in another AWS Region\"** -> accept default (see caveat below)\n   - **UNCHECK \"Enable encryption\"**\n   - Deletion protection: off\n9. **Create database.** Wait for **Available**. Record the **endpoint** (`lab-db.xxxx.us-east-1.rds.amazonaws.com`).\n\n> **Learner Lab caveat on cross-Region replication:** your account is limited to us-east-1 / us-west-2. If the \"Enable replication in another AWS Region\" destination defaults to a blocked region, set it to **US West (Oregon) us-west-2**, or creation fails. If it still errors with the box ticked: screenshot the error, create the DB WITHOUT that option, and add a one-line slide noting the Learner Lab restriction blocks cross-Region backup replication. A documented deviation is fine; a silent skip is not.\n\n**Screenshot:** Configuration tab now showing **Automated backups: Enabled (7 days)**.\n\n### 10.3 Create the read replica\n> PDF: \"Show that the option ... is now available. Name your replica 'lab-db-replica'. Keep all the other default settings.\"\n\n1. RDS -> `lab-db` -> **Actions**.\n2. **Screenshot the Actions dropdown with \"Create read replica\" now ENABLED** - pair it against the greyed-out shot from Phase 9. That before/after is exactly what the PDF wants.\n3. Click **Create read replica**:\n   - DB instance identifier: `lab-db-replica`\n   - Destination Region: same (us-east-1)\n   - DB instance class: keep default (`db.t3.micro`)\n   - Multi-AZ: No; Public access: No; everything else default\n   - **Create read replica**\n4. Takes 10-15 min. When done, `lab-db` shows Role **Primary**, `lab-db-replica` shows Role **Replica**.\n\n**Screenshot:** Databases list with both, Role column visible.\n\n---\n\n## PHASE 11 - Add records + verify replication (page 6, A.6/A.7)\n\n### 11.1 Point AdminServer at lab-db\nSSH into `p2520225AdminServer` (PuTTY, same as Part 1 4.3, using AdminServer's public IP).\n\nFind and edit the config:\n```bash\nsudo find /var/www -name \"rds.conf.php\"\nsudo cp /var/www/html/rds.conf.php /var/www/html/rds.conf.php.bak\nsudo nano /var/www/html/rds.conf.php\n```\nSet the file to **exactly** this (substitute your real endpoint). Do not leave any variable out:\n```php\n<?php $RDS_URL='lab-db.xxxx.us-east-1.rds.amazonaws.com'; $RDS_DB='lab'; $RDS_user='main'; $RDS_pwd='lab-password'; ?>\n```\n> **Common mistakes that silently break the app:**\n> - Missing `$RDS_user` or `$RDS_pwd` - the file looks fine but the app can't authenticate.\n> - Wrong closing tag (`>` instead of `?>`).\n> - Commas instead of semicolons between variables (the PDF shows commas - **use semicolons**).\n> - `:3306` appended to `$RDS_URL` - hostname only, no port.\n> - To clear the file in nano and start fresh: `Ctrl+K` repeatedly to delete line by line, then paste the block above.\n\n| Field | Value | From |\n|---|---|---|\n| `$RDS_URL` | `lab-db` **endpoint**, hostname only, no `:3306` | RDS -> lab-db -> Connectivity & security |\n| `$RDS_DB` | `lab` | initial database name |\n| `$RDS_user` | `main` | master username |\n| `$RDS_pwd` | `lab-password` | master password |\n\nSave (`Ctrl+O`, Enter, `Ctrl+X`), then:\n```bash\ncat /var/www/html/rds.conf.php\nsudo systemctl restart httpd\n```\n\n**Prove connectivity at the shell first (isolates network from app issues):**\n```bash\nsudo dnf install -y mariadb105\nmysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' -e \"SHOW DATABASES;\"\n```\nYou should see `lab` in the database list. If it hangs, `sg-db` isn't allowing 3306 from `sg-admin` (fix in 8.1). Screenshot the success.\n\n> **ERROR 1049 \"Unknown database 'lab'\"**: the `lab` database doesn't exist. This happens when you deleted and recreated `lab-db` and the \"Initial database name: lab\" field was missed in the RDS wizard. The server is reachable and credentials work - the database just needs creating. Fix:\n> ```bash\n> mysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' -e \"CREATE DATABASE lab;\"\n> mysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab < /var/www/html/sql/addressbook.sql\n> sudo systemctl restart httpd\n> ```\n> Then verify: `SHOW DATABASES;` should now list `lab`, and `USE lab; SHOW TABLES;` should show `address`.\n\n**Create the `address` table once (required - do NOT skip):** the app's RDS page reads/writes a table called `address`. When you configure `rds.conf.php` by hand (instead of the web form), nothing creates that table, so the page would error with \"Table 'lab.address' doesn't exist\". Load the schema the app ships with:\n```bash\nmysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab < /var/www/html/sql/addressbook.sql\n```\nThis creates `address` and seeds 2 sample rows (Johnson, Doe). Confirm:\n```bash\nmysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab -e \"SELECT * FROM address;\"\n```\n\n### 11.2 Add 2 records\n> PDF: \"Open pxxxxAdminServer and add 2 records to the database.\"\n\nRefresh `http://<adminserver-ip>` -> **RDS** tab -> the form now loads. Add **two** records with obviously-yours values so you can match them on the replica later, e.g.:\n```\nRecord 1: Abinaash P2520225\nRecord 2: ET0740 LAB3 Record2\n```\nSubmit each; confirm both list. **Screenshot both records** with the URL bar visible.\n\nStronger evidence from the shell:\n```bash\nmysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab -e \"SHOW TABLES;\"\nmysql -h lab-db.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab -e \"SELECT * FROM <table>;\"\n```\n\n### 11.3 Verify on the replica\n> PDF: \"Interact with your read-replica. Use pxxxxAdminServer to verify that the 2 records have been replicated.\"\n\nGet the **replica** endpoint: RDS -> `lab-db-replica` -> Connectivity & security.\n\n**Method 1 - repoint the app (what \"see note above\" means):**\n```bash\nsudo cp /var/www/html/rds.conf.php /var/www/html/rds.conf.php.primary\nsudo nano /var/www/html/rds.conf.php    # change ONLY $RDS_URL to the replica endpoint\nsudo systemctl restart httpd\n```\nRefresh the RDS tab -> both records appear, now served from `lab-db-replica`. **Screenshot** the two records alongside a terminal `cat rds.conf.php` proving the URL is the replica endpoint. Then restore:\n```bash\nsudo cp /var/www/html/rds.conf.php.primary /var/www/html/rds.conf.php\nsudo systemctl restart httpd\n```\n\n**Method 2 - direct SQL (bulletproof, do this too):**\n```bash\nmysql -h lab-db-replica.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab -e \"SELECT * FROM <table>;\"\n```\nProve it's read-only (shows you understand what a replica is):\n```bash\nmysql -h lab-db-replica.xxxx.us-east-1.rds.amazonaws.com -u main -p'lab-password' lab -e \"INSERT INTO <table> VALUES (...);\"\n```\nReturns `ERROR 1290 ... --read-only option so it cannot execute this statement`. **Screenshot it.**\n\n---\n\n## PHASE 12 - Graviton migration (page 6, A.7 Sustainability)\n\n> PDF: \"Change the instance type to AWS Graviton CPUs ... Show with evidence (from the console) the DB instance and its replica using Graviton CPUs.\"\n\nGraviton = AWS Arm64 silicon. The burstable Graviton equivalent of `db.t3.micro` is **`db.t4g.micro`**. **Do the replica first, then the primary.**\n\n**For `lab-db-replica`:**\n1. RDS -> `lab-db-replica` -> **Modify**.\n2. **DB instance class** -> **Burstable classes** -> select **`db.t4g.micro`** (clear any free-tier / previous-gen filter if it's hidden).\n3. Continue -> **Scheduling: Apply immediately** -> **Modify DB instance**.\n\n**For `lab-db`:** identical steps.\n\nEach takes 5-10 min (`Modifying` -> `Available`), with a brief outage - say so in the video.\n\n**Screenshots for A.7:**\n- Databases list with **Class = db.t4g.micro** on BOTH `lab-db` and `lab-db-replica`, Role column visible.\n- Each one's Configuration tab showing `db.t4g.micro`.\n\n**Sustainability slide text:**\n> Well-Architected Sustainability pillar - Hardware and Services. Migrating `lab-db` and `lab-db-replica` from `db.t3.micro` (x86-64) to `db.t4g.micro` (AWS Graviton2, Arm64) gives the same performance while cutting energy use by up to 60% (per the AWS workshop), reducing the database tier's carbon footprint at no loss of function. Graviton is also cheaper, so sustainability and cost-optimisation reinforce each other. Method: modify instance class in place, replica first then primary. Steps 3-4 (failover, restore) were out of scope per the brief; the replica was NOT promoted, as instructed.\n\n### 12.1 Cost control - do this after every screenshot above is captured\nYou can't stop a source that has a replica, so:\n1. **Delete `lab-db-replica`** (Actions -> Delete, no snapshot).\n2. Once gone, **`lab-db` -> Actions -> Stop temporarily**.\n3. **Stop `p2520225AdminServer`** if done.\nDon't delete `lab-db` - you may want a retake.\n\n---\n\n## PHASE 13 - Elastic Load Balancing + Auto Scaling (page 7, A.8)\n\n> PDF: distribute traffic across multiple web instances; don't route to unresponsive ones; min 2 / max 4 instances; CPU not above 70%; max 100% increase under load; demonstrate both LB and scaling.\n\n**The design:** bake an AMI from `p2520225-WebServer1` (which carries your `Load Test by AAS` edit), run an Auto Scaling group from it across the two **private** subnets, behind an internet-facing ALB in the two public subnets. That's \"WebServer1 used for ELB/ASG testing and verification\" - literally.\n\n**Instance budget check first:** ASG can run up to 4. Currently: WebServer1, HelloWebPage, AdminServer (+ Windows if not stopped). Cap is 9. **Stop `p2520225-WindowsServer` and `p2520225AdminServer`** before the load test so you don't hit the ceiling.\n\n### 13.0 Prerequisites\n- Two more SGs needed (VPC = `p2520225-vpc` for both):\n  - `p2520225-sg-alb` - Inbound **HTTP 80 from Anywhere-IPv4** (`0.0.0.0/0`), Desc `public web traffic`.\n  - `p2520225-sg-asg-web` - Inbound rules:\n    - **HTTP 80 from Custom -> `p2520225-sg-alb`**, Desc `from ALB only`\n    - **SSH 22 from Custom -> `10.12.0.0/16`**, Desc `jump-host SSH for stress test` (so you can SSH into the private ASG instances from AdminServer/WebServer1)\n- No AMI needed - the launch template installs the app fresh (13.1). The `Load Test by AAS` edit stays on WebServer1 only; the ASG instances don't need it.\n\n### 13.1 Launch template (fresh install via user data - NO AMI baking)\n> Your friend's method, and the reliable one: instead of baking an AMI from WebServer1 (which fails if httpd doesn't come up on the clone), the launch template installs the web app fresh on every instance. Targets come up healthy on their own. This still satisfies \"WebServer1 used for ELB/ASG testing\" - the template reproduces WebServer1's exact config.\n\n1. EC2 -> **Launch Templates** -> **Create launch template**.\n2. Name `p2520225-lt-web`, description `web tier for ASG`.\n3. Tick **\"Provide guidance ... EC2 Auto Scaling\"**.\n4. **Application and OS Images:** Quick Start -> **Amazon Linux 2023 AMI** (NOT a custom AMI).\n5. Instance type `t3.micro`. Key pair `p2520225-linux-key`.\n6. **Subnet: Don't include in launch template** (the ASG supplies subnets).\n7. **Security groups: `p2520225-sg-asg-web`**.\n8. Advanced network -> Auto-assign public IP: **Don't include / Disable** (these run private).\n9. **Advanced details:**\n   - **IAM instance profile: `LabInstanceProfile`** (lets you Session-Manager into the private instances for the stress test).\n   - **Detailed CloudWatch monitoring: Enable** (1-min metrics -> scale-out in ~3-5 min instead of ~10).\n   - **User data:** paste this exactly. **The `#!/bin/bash -ex` + `dnf update -y` combination from the friend's script will silently kill ASG instance setup if dnf times out on boot - instances launch, show InService, but Apache isn't running, health checks fail, and the ALB returns 503 with 0 healthy targets.**\n```bash\n#!/bin/bash\n# ASG web tier - bulletproof user data for Amazon Linux 2023 / PHP 8\n# Same reasoning as AdminServer: no dnf update, no bash -e, sleep for network ready.\n# This script runs on every instance the ASG launches, including replacements\n# after an unhealthy-instance termination - it MUST be reliable every time.\n\nsleep 15\n\ndnf install -y httpd wget php php-mysqli php-json mariadb105 unzip\n\n# Enable + start before the download so \"/\" returns 200 even if the zip fetch is slow.\nsystemctl enable httpd\nsystemctl start httpd\n\ncd /var/www/html\nwget -q https://aws-tc-largeobjects.s3.amazonaws.com/CUR-TF-100-ACCLFO-2/lab5-rds/lab-app-php7.zip\nunzip -o lab-app-php7.zip -d /var/www/html/\n\n# Restart so Apache serves the new files.\nsystemctl restart httpd\n```\n   > The `sleep 15` is the single most important line. Every other change is good hygiene - that line is what stops the timing-dependent failure that hit you in the real session.\n\n10. **Create launch template.**\n\n### 13.2 Target group\n1. EC2 -> **Target Groups** -> **Create target group**.\n2. Target type **Instances**, name `p2520225-tg-web`, HTTP : 80, VPC `p2520225-vpc`, HTTP1.\n3. Health checks: protocol HTTP, path `/`.\n4. **Advanced health check settings:** Healthy threshold `2`, Unhealthy threshold `2`, Timeout `5`, Interval `10`, Success codes `200`. (Fast checks = a dead instance drops in ~20s, good on video.)\n5. **Next** -> register NO targets (the ASG does) -> **Create target group**.\n\n### 13.3 Application Load Balancer\n1. EC2 -> **Load Balancers** -> **Create load balancer** -> **Application Load Balancer** -> Create.\n2. Name `p2520225-alb-web`, Scheme **Internet-facing**, IPv4.\n3. VPC `p2520225-vpc`. Mappings: tick **us-east-1a -> `p2520225-public-subnet-1`** and **us-east-1b -> `p2520225-public-subnet-2`**.\n4. Security groups: **Add `p2520225-sg-alb` FIRST**, then remove the default SG. The wizard warns \"must have at least one SG\" - it means don't leave the list empty. Add yours, then deselect the default. End result: only `p2520225-sg-alb` is listed.\n5. Listener: HTTP 80 -> **Forward to `p2520225-tg-web`**.\n6. **Create.** Wait for **Active**. Copy the **DNS name**.\n\n### 13.4 Auto Scaling group\n1. EC2 -> **Auto Scaling Groups** -> **Create Auto Scaling group**.\n2. Name `p2520225-asg-web`; Launch template `p2520225-lt-web`, version Latest -> Next.\n3. Network: VPC `p2520225-vpc`; AZs/subnets **`p2520225-private-subnet-1`** and **`p2520225-private-subnet-2`** -> Next.\n4. **Attach to existing load balancer -> choose from target groups -> `p2520225-tg-web`**. **Turn ON \"Turn on Elastic Load Balancing health checks\"** (mandatory - it's off by default). Health check grace period `120` -> Next.\n\n   > **ASG wizard scroll order (the sections are buried further than they look):**\n   > ```\n   > Step 3: Configure advanced options\n   >   - VPC Lattice (IGNORE - leave \"No VPC Lattice service\") \n   >   - Health checks <- ELB health check toggle is HERE, not in Group size\n   >   - Additional settings <- tick \"Enable group metrics collection within CloudWatch\" HERE\n   > Step 4: Configure group size and scaling\n   >   - Group size (Desired/Min/Max)\n   >   - Automatic scaling (target tracking policy)\n   > Step 5: Add notifications (skip)\n   > Step 6: Add tags\n   > ```\n   > `Enable group metrics collection within CloudWatch` **must be ticked** or your ASG Monitoring CPU graphs won't appear - and those graphs are required A.8 evidence. It's easy to miss because it's buried in \"Additional settings\" inside Step 3.\n\n5. Group size: **Desired 2, Min 2, Max 4**. (Do not set Desired to 4 - start at 2 and demonstrate scale-out.)\n6. **Automatic scaling -> Target tracking scaling policy**: name `p2520225-asg-cpu70`, metric **Average CPU utilization**, **Target value 70**, warmup `120` -> Next.\n7. Tags: add `Name = p2520225-asg-web-instance` -> Next -> **Create Auto Scaling group**.\n\n> **IMMEDIATELY after creating the ASG, verify the target group attachment.** Go to ASG -> **`p2520225-asg-web`** -> **Load balancing** tab. You must see `p2520225-tg-web` listed. If it's missing, the ASG will launch 2 healthy instances that never register into the target group, leaving the TG at 0 targets and the ALB returning \"503 Service Temporarily Unavailable\". Fix: ASG -> **Edit** -> **Load balancing** -> **Attach to existing load balancer** -> `p2520225-tg-web` -> turn ON ELB health checks -> Save.\n>\n> **Emergency fallback if you're out of time:** manually register the instances. TG -> `p2520225-tg-web` -> **Targets** -> **Register targets** -> select both ASG instances -> port 80 -> **Register**. This makes the ALB work for the demo. The ASG still manages the instances; it just won't auto-deregister them on termination.\n>\n> **\"Service Temporarily Unavailable\" from the ALB URL:** always check TG -> Targets first. If it shows 0 targets or all Unhealthy, the ALB is fine - the problem is upstream of it. Don't touch the ALB itself.\n\n### 13.5 Requirement mapping (put this table on a slide - fastest way to bank A.8)\n\n| PDF requirement | Satisfied by | Where |\n|---|---|---|\n| distribute across multiple instances | ALB `p2520225-alb-web` -> `p2520225-tg-web`, ASG registers instances in 2 AZs | ALB listener + TG targets |\n| don't route to unresponsive instances | TG health check HTTP `/` every 10s, unhealthy threshold 2; ASG health-check type **ELB** replaces failed instances | TG health checks; ASG settings |\n| min 2 always running | ASG **Min = 2** | ASG details |\n| max capacity 4 | ASG **Max = 4** | ASG details |\n| CPU not above 70% | target-tracking `p2520225-asg-cpu70` on ASGAverageCPUUtilization, target 70 | ASG Automatic scaling |\n| max 100% instance increase | Min 2 -> Max 4 = exactly 100% growth | ASG details (Min/Max) |\n\n### 13.6 Demonstrate load balancing\n1. Wait for 2 InService instances, TG shows **2 healthy** in 2 AZs.\n2. Browse `http://<alb-dns>` -> Load Test page (fresh app, no initials edit here - initials only matter on WebServer1).\n3. Hard-refresh (`Ctrl+Shift+R`) repeatedly -> the Meta-Data **InstanceId** and **Availability Zone** flip between the two instances. **Screenshot two states** side by side (AZ-a + id-A, then AZ-b + id-B).\n4. For the video, a loop is convincing - from CloudShell:\n```bash\nfor i in $(seq 1 20); do curl -s http://<alb-dns> | grep -o 'i-[0-9a-f]\\{8,\\}'; sleep 1; done\n```\nPrints alternating instance IDs. Screenshot the TG Targets tab (2 healthy, 2 AZs) too.\n\n### 13.7 Demonstrate dropping an unresponsive instance\n1. Pick one ASG instance -> Connect -> **Session Manager**.\n2. `sudo systemctl stop httpd`\n3. TG -> Targets -> that target goes **unhealthy** in ~20-30s. Refresh the ALB URL -> every response now comes from the surviving instance (InstanceId never changes). **Screenshot.**\n4. Because health-check type is **ELB**, the ASG terminates the unhealthy instance and launches a replacement. **ASG -> Activity** tab shows an entry naming the ELB health-check failure as the cause. **Screenshot that** - it's the single best A.8 evidence.\n\n### 13.8 Demonstrate scale-out (your friend's stress method + troubleshooting)\nTarget tracking scales on the **average CPU across the whole group**. One instance at 100% and one at 0% = 50% average = **no scale-out**. So you MUST load **both** instances at once.\n\n**Get onto both instances.** Two options:\n- **Session Manager (simplest, no keys/SG changes):** EC2 -> Instances -> pick an ASG instance -> Connect -> Session Manager. Open a second one in another tab.\n- **Jump-host SSH (your friend's way):** the ASG instances are private, so SSH to them *from a public box*. PuTTY/SSH into `p2520225AdminServer` (or WebServer1), then from there `ssh -i key.pem ec2-user@<asg-private-ip>`. For this to work, `p2520225-sg-asg-web` must allow **SSH 22 from `10.12.0.0/16`** (add that inbound rule), and you need the `.pem` on the jump host.\n\n> **The \"Load Test\" link on the web app is NOT the stress test.** That link drives CPU on whichever instance is serving the page via the ALB, but it's single-threaded and barely moves the needle. Use `stress` instead - it pegs all vCPUs and guarantees you get above 70%.\n\n**On EACH instance, install and run stress (long timeout so both overlap):**\n```bash\nsudo dnf install -y stress\nstress --cpu 4 --timeout 1200\n```\nRun it on BOTH before the first one finishes - if one drops to 0% while you start the second, the average never crosses 70%. 1200s (20 min) gives you plenty of overlap.\n\n**What to watch (and the timing that trips people up):**\n- Target tracking needs **CPUUtilization > 70 for 3 datapoints within 3 minutes** before it fires. While CPU warms up, BOTH `AlarmHigh` and `AlarmLow` show **OK** - that's normal, not broken.\n- Once 3 consecutive 1-min datapoints exceed 70%, **`AlarmHigh` -> \"In alarm\"** (red).\n- **EC2 -> Auto Scaling Groups -> `p2520225-asg-web` -> Activity** tab shows the scale-out: capacity 2 -> 3 -> 4, status \"In progress\" then \"Successful\".\n\n**Troubleshooting (your friend's hard-won notes):**\n- **SSH hangs to an ASG instance** -> check `p2520225-sg-asg-web` allows SSH 22 from `10.12.0.0/16`. Still hanging -> look at the Target Group: if the target says **\"Draining\"**, the ASG is replacing it (health timeout). Wait 1-2 min for a healthy replacement, grab its new private IP, SSH into that one instead.\n- **CPU keeps dropping to 0%** -> your `--timeout` expired. Re-run with a longer one on both.\n- **No scale-out after 5+ min at >70% average** -> confirm detailed monitoring is on (launch template step 9) and that BOTH instances are actually pegged (check the CloudWatch per-instance CPU graph).\n\n**Screenshots for A.8:**\n- CloudWatch CPUUtilization for the ASG crossing 70% (time axis visible).\n- ASG Automatic scaling tab (policy `p2520225-asg-cpu70`, metric, target 70).\n- ASG Monitoring -> group metrics stepping 2 -> 4.\n- `AlarmHigh` in the \"In alarm\" state.\n- ASG Activity tab: \"Launching a new EC2 instance\" entries.\n- ASG Instance management: 4 InService. TG: 4 healthy across both AZs.\n\n**Then stop the load:** `Ctrl+C` the stress on each (or let the timeout end), and set ASG Desired back to 2 if it hasn't scaled in (scale-in takes ~15 min of low CPU - narrate it, don't wait on camera).\n\n---\n\n## Recording your video - do NOT use Snipping Tool for long sessions\n> **Snipping Tool fails silently on long recordings (>2 GB).** It records to a temp folder internally but never moves the file to `Videos\\Screen Recordings` when you close the window or it crashes. The file looks lost but is actually at:\n> ```\n> C:\\Users\\abina\\AppData\\Local\\Packages\\Microsoft.ScreenSketch_8wekyb3d8bbwe\\TempState\\Recordings\\\n> ```\n> Your AWS session will generate 3-6 GB of recording - that's exactly where it breaks.\n>\n> **Use OBS Studio instead.** Free, explicit output folder, never silently loses recordings. Download at obsproject.com. Settings: Output -> Simple -> Recording -> mp4, quality CRF 23. Start recording, do the whole AWS session, stop - the file is where you told it to go.\n>\n> **If you already recorded and the file is \"missing\":** run this in PowerShell to find it in the temp folder:\n> ```powershell\n> Get-ChildItem \"$env:LOCALAPPDATA\\Packages\\Microsoft.ScreenSketch_8wekyb3d8bbwe\\TempState\\Recordings\" -File | ForEach-Object { \"$($_.LastWriteTime) | $([math]::Round($_.Length/1GB,2)) GB | $($_.FullName)\" }\n> ```\n> Copy it to your Desktop immediately (it's in AppData/Local which can be wiped):\n> ```powershell\n> Copy-Item \"C:\\Users\\abina\\AppData\\Local\\Packages\\Microsoft.ScreenSketch_8wekyb3d8bbwe\\TempState\\Recordings\\<filename>.mp4\" \"C:\\Users\\abina\\OneDrive\\Desktop\\AWS-Recovered.mp4\"\n> ```\n> (Your Desktop is at `C:\\Users\\abina\\OneDrive\\Desktop`, not `C:\\Users\\abina\\Desktop` - it's OneDrive-redirected.)\n\n## Why your friend's bill was ~$5-6 (and yours can be too)\nNothing exotic - he just didn't leave the expensive things running. In rough order of burn rate: the **NAT gateway** (~$1/day idle), the **two RDS instances** (primary + replica - and remember you can't stop the primary while the replica exists, so it bills non-stop until you delete the replica), and the **ALB** (per-hour + LCU). His low spend came from doing each phase in a focused sitting and tearing down after: delete the replica -> stop lab-db, stop EC2 instances, and if he was away more than a day, delete the NAT + release its EIP. Do the same and you'll land in the same $5-10 range with $40+ to spare.\n\n## END OF BUILD - final cost sweep\n\nBefore you finish for the day:\n- ASG Desired -> 2 (or 0 if you have all A.8 evidence).\n- **Stop** all four named EC2 instances.\n- **Delete `lab-db-replica`**, then **Stop `lab-db`**.\n- If away >1 day: delete `p2520225-natgw` + release the EIP, and consider deleting the ALB (per-hour cost).\n- Tag Editor (Resource Groups & Tag Editor -> regions us-east-1 + us-west-2) to catch anything you forgot.\n\n## What's left for the deck (Part B)\nFill the provided template, keep `p2520225-*` visible throughout, record the ~20-min video, submit `p2520225_design.ppt` + `p2520225_presentation.mp4`. The full deck slide-by-slide map and the video timing plan are in the master walkthrough file if you want them.\n";
 
-  // 2
-  { type:'MCQ',
-    q:'A /24 subnet is created in an Amazon VPC. After AWS reserves its mandatory IP addresses, how many are available for EC2 instances?',
-    opts:['256','254','252','251'], ans:[3] },
+// ── inputs ───────────────────────────────────────────────────────
+const iName     = document.getElementById('in-name');
+const iAdmin    = document.getElementById('in-admin');
+const iIndex    = document.getElementById('in-index');
+const iInitials = document.getElementById('in-initials');
 
-  // 3
-  { type:'MAQ',
-    q:'Which of the following are components INCLUDED in an Amazon Machine Image (AMI)? Select all that apply.',
-    opts:[
-      'Root volume template',
-      'Launch permissions',
-      'Block device mapping',
-      'Instance pricing model',
-      'SSH key pair'
-    ], ans:[0,1,2] },
-
-  // 4
-  { type:'MCQ',
-    q:'Which statement about AWS IAM is FALSE?',
-    opts:[
-      'IAM is free to use.',
-      'IAM is a global service, not Region-specific.',
-      'An explicit Deny in a policy always overrides any Allow.',
-      'IAM groups can be nested inside other IAM groups.'
-    ], ans:[3] },
-
-  // 5
-  { type:'MCQ',
-    q:'Which EC2 pricing model uses spare AWS capacity, offers savings of up to ~90%, but can be reclaimed by AWS with only a 2-minute notification?',
-    opts:['On-Demand Instances','Reserved Instances (NURI)','Spot Instances','Dedicated Hosts'], ans:[2] },
-
-  // 6
-  { type:'MCQ',
-    q:'What is the smallest subnet CIDR block you can create in an Amazon VPC?',
-    opts:['/24','/28','/30','/32'], ans:[1] },
-
-  // 7
-  { type:'MCQ',
-    q:'A security team wants automated vulnerability scanning of EC2 instances and container images for known CVEs. Which service fits?',
-    opts:['Amazon GuardDuty','Amazon Macie','Amazon Inspector','AWS Security Hub'], ans:[2] },
-
-  // 8
-  { type:'MCQ',
-    q:'An auditor requests a complete log of every API call made in your AWS account over the past 90 days, including who made each call and when. Which service produces this?',
-    opts:['Amazon CloudWatch','AWS Config','AWS CloudTrail','Amazon GuardDuty'], ans:[2] },
-
-  // 9 — MAQ
-  { type:'MAQ',
-    q:'Which of the following statements about Security Groups are TRUE? Select all that apply.',
-    opts:[
-      'They operate at the instance or ENI level, not the subnet level.',
-      'They are stateful — return traffic is automatically allowed without an explicit rule.',
-      'They support both allow and deny rules.',
-      'All rules in a Security Group are evaluated simultaneously.',
-      'They operate at the subnet level, not the instance level.',
-      'By default, all inbound traffic to an instance is denied.'
-    ], ans:[0,1,3,5] },
-
-  // 10
-  { type:'MCQ',
-    q:'AWS pricing is based on three fundamental cost drivers. Which of the following is NOT one of them?',
-    opts:['Compute','Storage','Data Transfer','Number of IAM users in the account'], ans:[3] },
-
-  // 11
-  { type:'MCQ',
-    q:'Which AWS security service uses ML to discover and protect sensitive data including PII stored in Amazon S3 buckets?',
-    opts:['Amazon GuardDuty','Amazon Inspector','Amazon Macie','AWS WAF'], ans:[2] },
-
-  // 12
-  { type:'MCQ',
-    q:'An EBS volume exists in us-east-1a. A developer tries to attach it to an EC2 instance in us-east-1b. What happens?',
-    opts:[
-      'Success — EBS volumes are Region-scoped and attach to any instance in the same Region.',
-      'Failure — EBS volumes can only be attached to instances in the same Availability Zone.',
-      'Success with a warning — cross-AZ EBS attachment works but incurs data transfer charges.',
-      'Failure — each EBS volume is permanently locked to one instance at creation time.'
-    ], ans:[1] },
-
-  // 13
-  { type:'MCQ',
-    q:'An EC2 Reserved Instance with NO upfront payment is called what, and provides which discount tier?',
-    opts:[
-      'AURI — the largest RI discount.',
-      'PURI — the medium RI discount.',
-      'NURI — the smallest RI discount.',
-      'DURI — no discount; the full On-Demand rate still applies.'
-    ], ans:[2] },
-
-  // 14
-  { type:'MCQ',
-    q:'When a user creates a brand-new Amazon VPC, which resource is automatically created by AWS by default?',
-    opts:[
-      'An Internet Gateway',
-      'Three subnets spread across different Availability Zones',
-      'A NAT Gateway',
-      'A main route table'
-    ], ans:[3] },
-
-  // 15
-  { type:'MCQ',
-    q:'The AWS Well-Architected Framework was updated in December 2021 to add a 6th pillar focused on reducing the environmental impact of cloud workloads. Which pillar is this?',
-    opts:['Scalability','Security','Sustainability','Service Excellence'], ans:[2] },
-
-  // 16
-  { type:'MCQ',
-    q:'A workload runs 4 EC2 instances continuously all month but spikes to 12 instances on the final day. What is the MOST cost-effective pricing combination?',
-    opts:[
-      '12 Reserved Instances (covers both base and peak at the cheapest rate)',
-      '12 On-Demand Instances at all times',
-      '4 Reserved Instances for the steady base + 8 On-Demand Instances for the spike',
-      '12 Spot Instances for both the base and the spike'
-    ], ans:[2] },
-
-  // 17
-  { type:'MCQ',
-    q:'A team wants managed Kubernetes on AWS without maintaining the control plane. Which service fits?',
-    opts:['Amazon ECS','Amazon ECR','AWS Fargate','Amazon EKS'], ans:[3] },
-
-  // 18
-  { type:'MCQ',
-    q:'Which of the following statements about Service Control Policies (SCPs) in AWS Organizations is FALSE?',
-    opts:[
-      'SCPs can be applied to individual accounts or Organizational Units (OUs).',
-      'SCPs act as a permission ceiling — they define the maximum allowed actions.',
-      'An SCP alone can grant a user permission to call an AWS service API.',
-      'An explicit SCP Deny overrides any IAM Allow within affected accounts.'
-    ], ans:[2] },
-
-  // 19
-  { type:'MCQ',
-    q:'Amazon Aurora supports up to how many low-latency read replicas?',
-    opts:['5','10','15','20'], ans:[2] },
-
-  // 20 — MAQ
-  { type:'MAQ',
-    q:'Which of the following AWS services are FREE to use (no service charge, though underlying provisioned resources may still cost money)? Select all that apply.',
-    opts:[
-      'Amazon VPC',
-      'AWS IAM',
-      'AWS CloudFormation',
-      'EC2 Auto Scaling',
-      'Amazon EC2',
-      'AWS Elastic Beanstalk'
-    ], ans:[0,1,2,3,5] },
-
-  // 21
-  { type:'MCQ',
-    q:'A gaming company needs to route TCP/UDP traffic over the AWS global backbone using two static anycast IPs for predictable low-latency performance. Which service fits?',
-    opts:['Amazon CloudFront','Amazon Route 53','AWS Global Accelerator','AWS Direct Connect'], ans:[2] },
-
-  // 22
-  { type:'MCQ',
-    q:'You need to retrieve all DynamoDB items where the non-key attribute "status" equals "pending". Which operation must you use?',
-    opts:[
-      'Query — it can search by any attribute.',
-      'GetItem — it retrieves items matching any field.',
-      'Scan — it reads every item in the table and filters results.',
-      'Filter — it is a standalone DynamoDB operation.'
-    ], ans:[2] },
-
-  // 23
-  { type:'MCQ',
-    q:'AWS documentation states that a single data centre cannot be shared across multiple components of one specific infrastructure layer. Which layer is that?',
-    opts:['AWS Regions','Availability Zones','Edge Locations','Local Zones'], ans:[1] },
-
-  // 24 — MAQ
-  { type:'MAQ',
-    q:'Which of the following are TRUE about the AWS Enterprise support plan? Select all that apply.',
-    opts:[
-      'The maximum response time for a business-critical system outage is 15 minutes.',
-      'It includes a designated Technical Account Manager (TAM).',
-      'It includes access to the Concierge Support Team for billing help.',
-      'The response time for a production system down event is under 30 minutes.',
-      'It provides full access to all AWS Trusted Advisor checks.',
-      'The response time for production-impaired events is under 4 hours.'
-    ], ans:[0,1,2,4,5] },
-
-  // 25
-  { type:'MCQ',
-    q:'Which S3 storage class stores data in a single Availability Zone, is ~20% cheaper than Standard-IA, and is suitable for reproducible infrequently accessed data?',
-    opts:[
-      'S3 Glacier Instant Retrieval',
-      'S3 Standard-IA',
-      'S3 One Zone-IA',
-      'S3 Intelligent-Tiering'
-    ], ans:[2] },
-
-  // 26
-  { type:'MCQ',
-    q:'An IAM policy contains an explicit Allow AND an explicit Deny for the same action on the same resource. What is the effective permission?',
-    opts:[
-      'Allow — explicit allows override implicit denies.',
-      'Deny — explicit denies always override any allows.',
-      'Undefined — conflicting statements must be removed before the policy is valid.',
-      'Allow — the most recently created statement takes precedence.'
-    ], ans:[1] },
-
-  // 27 — MAQ
-  { type:'MAQ',
-    q:'The AWS Cloud Adoption Framework (CAF) organises its guidance into six perspectives. Which of the following ARE valid CAF perspectives? Select all that apply.',
-    opts:[
-      'Business','People','Governance','Platform','Security','Operations','Reliability','Sustainability'
-    ], ans:[0,1,2,3,4,5] },
-
-  // 28
-  { type:'MCQ',
-    q:'AWS Elastic Beanstalk is classified under which cloud service model?',
-    opts:[
-      'IaaS — because it provisions EC2 instances underneath.',
-      'PaaS — you upload code and AWS handles provisioning, deployment, and scaling.',
-      'SaaS — because the application itself is fully managed by AWS.',
-      'FaaS — because it runs serverless functions in response to events.'
-    ], ans:[1] },
-
-  // 29
-  { type:'MCQ',
-    q:'Which AWS billing tool provides the most granular line-item cost and usage dataset, including RI/Savings Plan metadata, and can be delivered to S3 for custom analysis?',
-    opts:['AWS Budgets','AWS Cost Explorer','AWS Billing Dashboard','AWS Cost and Usage Report (CUR)'], ans:[3] },
-
-  // 30 — MAQ
-  { type:'MAQ',
-    q:'Which of the following statements about Amazon S3 are TRUE? Select all that apply.',
-    opts:[
-      'S3 Standard objects are replicated across multiple AZs within the same Region by default.',
-      'All S3 bucket objects are private by default.',
-      'S3 bucket names must be globally unique across all AWS accounts.',
-      'A single S3 object can be up to 5 TB in size.',
-      'S3 objects are replicated across multiple AWS Regions by default.',
-      'S3 bucket names only need to be unique within your own AWS account.'
-    ], ans:[0,1,2,3] },
-
-  // 31
-  { type:'MCQ',
-    q:'What is the maximum size of a single object stored in Amazon S3?',
-    opts:['1 TB','5 TB','10 TB','Unlimited — S3 has no per-object size limit'], ans:[1] },
-
-  // 32
-  { type:'MCQ',
-    q:'An Internet Gateway (IGW) is attached to a VPC. Which statement CORRECTLY describes its function?',
-    opts:[
-      'It allows private-subnet instances to initiate outbound internet traffic only.',
-      'It connects two VPCs within the same Region via private routing.',
-      'It enables bidirectional internet traffic for instances in public subnets.',
-      'It establishes an encrypted VPN tunnel between an on-premises network and the VPC.'
-    ], ans:[2] },
-
-  // 33 — MAQ
-  { type:'MAQ',
-    q:'AWS Trusted Advisor organises its best-practice checks into five categories. Which of the following ARE those five categories? Select all that apply.',
-    opts:[
-      'Cost Optimization',
-      'Performance',
-      'Security',
-      'Fault Tolerance',
-      'Service Limits',
-      'High Availability',
-      'Data Transfer'
-    ], ans:[0,1,2,3,4] },
-
-  // 34
-  { type:'MCQ',
-    q:'"The system remains operational even when individual components fail, due to built-in component redundancy." This defines which concept?',
-    opts:['High Availability','Scalability','Reliability','Fault Tolerance'], ans:[3] },
-
-  // 35
-  { type:'MCQ',
-    q:'What is the primary role of the management (payer) account in AWS Organizations?',
-    opts:[
-      'It acts as the IAM identity provider for all member accounts.',
-      'It automatically deploys workloads to all member accounts.',
-      'It consolidates billing from all member accounts into a single invoice.',
-      'It enforces SCPs on itself and all member accounts equally.'
-    ], ans:[2] },
-
-  // 36 — MAQ
-  { type:'MAQ',
-    q:'Which of the following statements about Amazon EFS are CORRECT? Select all that apply.',
-    opts:[
-      'EFS is a managed Network File System (NFS).',
-      'EFS supports concurrent access by multiple EC2 instances simultaneously.',
-      'EFS is compatible with Linux-based AMIs only — not Windows.',
-      'EFS capacity scales automatically from zero to petabytes without pre-provisioning.',
-      'EFS is a block storage service, similar to EBS.',
-      'EFS volumes can only be mounted by a single EC2 instance at a time, like EBS.'
-    ], ans:[0,1,2,3] },
-
-  // 37
-  { type:'MCQ',
-    q:'A team wants to run Docker containers without managing any underlying servers or EC2 clusters. Which option fits?',
-    opts:['Amazon ECS with EC2 launch type','Amazon EKS','AWS Fargate','Amazon ECR'], ans:[2] },
-
-  // 38
-  { type:'MCQ',
-    q:'A product team wants 70% of traffic going to the current version and 30% to an experimental version for A/B testing. Which Route 53 routing policy enables this?',
-    opts:['Latency routing','Failover routing','Geolocation routing','Weighted routing'], ans:[3] },
-
-  // 39
-  { type:'MCQ',
-    q:'An EC2 instance uses storage that is physically attached to the host machine. When the instance is stopped or terminated, all data on that storage is permanently lost. What is this storage type?',
-    opts:['Amazon EBS General Purpose SSD (gp3)','Amazon EFS','Instance Store','Amazon S3'], ans:[2] },
-
-  // 40
-  { type:'MCQ',
-    q:'For an Elastic Load Balancer to accept and route incoming traffic, which component MUST be configured on it?',
-    opts:['A target group','A health check rule','A listener','A security policy'], ans:[2] },
-
-  // 41
-  { type:'MCQ',
-    q:'In Amazon S3 Glacier, what is the relationship between a "vault" and an "archive"?',
-    opts:[
-      'An archive is a container that holds multiple vaults.',
-      'A vault is a container that holds archives.',
-      'Vault and archive are interchangeable terms for the same object.',
-      'A vault is a metadata index; an archive is the access policy that governs it.'
-    ], ans:[1] },
-
-  // 42
-  { type:'MCQ',
-    q:'There are four recommended factors for choosing an AWS Region. Which of the following is NOT one of them?',
-    opts:[
-      'Compliance and data sovereignty laws',
-      'Proximity to end users for lower latency',
-      'Number of Availability Zones within the Region',
-      'Pricing and cost differences between Regions'
-    ], ans:[2] },
-
-  // 43
-  { type:'MCQ',
-    q:'Which statement about Docker containers is TRUE?',
-    opts:[
-      'Containers include a complete guest OS, making them more isolated than VMs.',
-      'Containers share the host OS kernel and do NOT contain a full operating system.',
-      'Containers take longer to start than VMs because they need to boot a full OS.',
-      'Docker containers on AWS can only run on Amazon EKS.'
-    ], ans:[1] },
-
-  // 44
-  { type:'MCQ',
-    q:'Amazon DynamoDB is the BEST choice for which of the following scenarios?',
-    opts:[
-      'Complex multi-table relational queries with transactions and referential integrity.',
-      'Petabyte-scale SQL analytics with columnar query optimisation for BI dashboards.',
-      'Session-state storage for millions of concurrent users requiring single-digit-ms access with a flexible schema.',
-      'Long-term archival of rarely accessed compliance records at the lowest possible cost.'
-    ], ans:[2] },
-
-  // 45
-  { type:'MCQ',
-    q:'In EC2 Auto Scaling, "scale in" refers to which action?',
-    opts:[
-      'Increasing the CPU and memory of existing instances (vertical scaling).',
-      'Launching additional EC2 instances to handle a surge in demand.',
-      'Terminating EC2 instances to reduce capacity when demand drops.',
-      'Migrating On-Demand instances to Reserved pricing at month end.'
-    ], ans:[2] },
-
-  // 46
-  { type:'MCQ',
-    q:'Which type of Elastic Load Balancer operates at OSI Layer 4 and is designed for extreme performance with TCP and UDP traffic?',
-    opts:[
-      'Application Load Balancer (ALB)',
-      'Classic Load Balancer (CLB)',
-      'Network Load Balancer (NLB)',
-      'Gateway Load Balancer (GWLB)'
-    ], ans:[2] },
-
-  // 47 — MAQ
-  { type:'MAQ',
-    q:'Which of the following actions can ONLY be performed by the AWS account root user — not by any IAM user, even one with AdministratorAccess? Select all that apply.',
-    opts:[
-      'Changing the AWS account support plan',
-      'Closing (deleting) the AWS account',
-      'Deleting an Amazon S3 bucket',
-      'Creating IAM users and groups',
-      'Changing the account name or root email address'
-    ], ans:[0,1,4] },
-
-  // 48
-  { type:'MCQ',
-    q:'What is the MAXIMUM memory that can be allocated to a single AWS Lambda function execution environment?',
-    opts:[
-      '3,008 MB (the original Lambda memory limit)',
-      '6,144 MB',
-      '10,240 MB (10 GB)',
-      '15,360 MB (15 GB)'
-    ], ans:[2] },
-
-  // 49 — MAQ
-  { type:'MAQ',
-    q:'Which of the following are valid EC2 instance families? Select all that apply.',
-    opts:[
-      'General Purpose',
-      'Compute Optimized',
-      'Memory Optimized',
-      'Storage Optimized',
-      'Accelerated Computing',
-      'Network Optimized',
-      'Transfer Optimized'
-    ], ans:[0,1,2,3,4] },
-
-  // 50
-  { type:'MCQ',
-    q:'Which of the following BEST captures the foundational cloud architecture principle AWS recommends for building resilient systems?',
-    opts:[
-      '"Build tightly-coupled components so failures are contained and simple to trace."',
-      '"Provision for maximum expected peak load at all times to eliminate any risk of degradation."',
-      '"Assume everything will fail — design systems to handle failure gracefully rather than prevent it."',
-      '"Deploy all workloads in a single AWS Region to reduce cross-Region latency and management overhead."'
-    ], ans:[2] }
-];
-
-/* ---- render ---- */
-const container = document.getElementById('quiz');
-Q.forEach((q, qi) => {
-  const wrap = document.createElement('div');
-  wrap.className = 'question';
-  wrap.id = 'q' + qi;
-
-  const isMaq = q.type === 'MAQ';
-  wrap.innerHTML =
-    `<div class="qhead">
-       <span class="qnum">Q${qi + 1} / ${Q.length}</span>
-       <span class="qtag${isMaq ? ' maq' : ''}">${q.type}</span>
-     </div>
-     <div class="qtext">${q.q}</div>` +
-    q.opts.map((o, oi) => {
-      const t = isMaq ? 'checkbox' : 'radio';
-      return `<div class="option" id="opt_${qi}_${oi}" onclick="pick(this,'${t}','q${qi}')">
-        <input type="${t}" name="q${qi}" value="${oi}">
-        <label>${String.fromCharCode(65 + oi)}) ${o}</label>
-      </div>`;
-    }).join('');
-
-  container.appendChild(wrap);
+iAdmin.addEventListener('input', function() {
+  let v = this.value.toLowerCase().replace(/[^p0-9]/g, '');
+  if (v.length && v[0] !== 'p') v = 'p' + v.replace(/p/g, '');
+  if (v.length > 8) v = v.slice(0, 8);
+  this.value = v;
+  validate('admin');
 });
 
-/* ---- pick ---- */
-let done = false;
-function pick(div, type, name) {
-  if (done) return;
-  const inp = div.querySelector('input');
-  if (type === 'radio') {
-    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-      r.checked = false;
-      r.closest('.option').classList.remove('selected');
-    });
-    inp.checked = true;
-    div.classList.add('selected');
-  } else {
-    inp.checked = !inp.checked;
-    div.classList.toggle('selected', inp.checked);
-  }
+iInitials.addEventListener('input', function() {
+  this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+  validate('initials');
+});
+
+iName.addEventListener('input',  () => validate('name'));
+iIndex.addEventListener('input', () => validate('index'));
+
+function setValidity(id, ok, val) {
+  const el = document.getElementById('in-' + id);
+  const err = document.getElementById('err-' + id);
+  const hasVal = val && val.length > 0;
+  el.classList.toggle('valid',   hasVal && ok);
+  el.classList.toggle('invalid', hasVal && !ok);
+  if (err) err.classList.toggle('show', hasVal && !ok);
+  return ok;
 }
 
-/* ---- check ---- */
-function check() {
-  done = true;
-  document.getElementById('checkbtn').disabled = true;
+function validate(id) {
+  if (id === 'name')     return setValidity('name',     iName.value.trim().length >= 2, iName.value);
+  if (id === 'admin')    return setValidity('admin',    /^p\d{7}$/.test(iAdmin.value), iAdmin.value);
+  if (id === 'index')  { const v = parseInt(iIndex.value); return setValidity('index', !isNaN(v) && v >= 1 && v <= 60, iIndex.value); }
+  if (id === 'initials') return setValidity('initials', /^[A-Z]{2,6}$/.test(iInitials.value), iInitials.value);
+}
 
-  let correct = 0;
-  Q.forEach((q, qi) => {
-    const qDiv  = document.getElementById('q' + qi);
-    const inps  = qDiv.querySelectorAll('input');
-    const sel   = new Set();
-    inps.forEach((inp, oi) => { if (inp.checked) sel.add(oi); });
-    const correctSet = new Set(q.ans);
+function validateAll() {
+  return ['name','admin','index','initials'].map(id => {
+    // trigger with current values so errors show
+    const el = document.getElementById('in-' + id);
+    el.dispatchEvent(new Event('input'));
+    return validate(id);
+  }).every(Boolean);
+}
 
-    const isRight = q.ans.length === sel.size && q.ans.every(a => sel.has(a));
-    if (isRight) { correct++; qDiv.classList.add('q-right'); }
-    else           qDiv.classList.add('q-wrong');
+// ── personalise ──────────────────────────────────────────────────
+function personalise(md, name, admin, idx, initials) {
+  let s = md;
+  s = s.split('Abinaash Abirama Sundaram').join(name);
+  s = s.split('p2520225').join(admin);
+  s = s.split('P2520225').join(admin.charAt(0).toUpperCase() + admin.slice(1));
+  s = s.split('10.12.').join('10.' + idx + '.');
+  s = s.split('10-12-').join('10-' + idx + '-');
+  s = s.split('AAS').join(initials);
+  s = s.split('**Index (x):** 12').join('**Index (x):** ' + idx);
+  s = s.split('where x = index no = 12').join('where x = index no = ' + idx);
+  s = s.split('Your index number is 12,').join('Your index number is ' + idx + ',');
+  return s;
+}
 
-    q.opts.forEach((_, oi) => {
-      const optDiv = document.getElementById(`opt_${qi}_${oi}`);
-      optDiv.classList.remove('selected');
-      const wasSel = sel.has(oi);
-      const isAns  = correctSet.has(oi);
-      if      (wasSel && isAns)  optDiv.classList.add('hit');
-      else if (wasSel && !isAns) optDiv.classList.add('miss');
-      else if (!wasSel && isAns) optDiv.classList.add('reveal');
+// ── marked setup ─────────────────────────────────────────────────
+const renderer = new marked.Renderer();
+renderer.heading = function(text, level) {
+  const raw = text.replace(/<[^>]*>/g, '');
+  const id  = raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `<h${level} id="${id}">${text}</h${level}>\n`;
+};
+marked.setOptions({ renderer, gfm: true, breaks: false });
+
+// ── build TOC ─────────────────────────────────────────────────────
+function buildTOC(container) {
+  const ul = document.getElementById('toc-ul');
+  ul.innerHTML = '';
+  container.querySelectorAll('h2, h3').forEach(h => {
+    if (!h.id) return;
+    const li = document.createElement('li');
+    li.className = h.tagName === 'H3' ? 'h3' : '';
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    // strip parens/marks from toc text for brevity
+    a.textContent = h.textContent.replace(/\s*\(.*?\)/g, '').replace(/[*`]/g, '').trim();
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      h.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => window.scrollBy(0, -50), 350);
     });
+    li.appendChild(a);
+    ul.appendChild(li);
   });
 
-  const pct = Math.round(correct / Q.length * 100);
-  const scoreEl = document.getElementById('score');
-  scoreEl.textContent = `${correct} / ${Q.length}  (${pct}%)`;
-  scoreEl.className = pct >= 70 ? 'pass' : 'fail';
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        ul.querySelectorAll('a').forEach(a => {
+          a.classList.toggle('active', a.href.endsWith('#' + e.target.id));
+        });
+      }
+    });
+  }, { rootMargin: '-50px 0px -70% 0px', threshold: 0 });
 
-  const msgs = [
-    [90, 'Strong result. You\'re likely ready.'],
-    [80, 'Good. A few areas worth revisiting before the exam.'],
-    [70, 'Passing threshold. Review the questions you missed.'],
-    [50, 'Below passing. More study needed before sitting the exam.'],
-    [0,  'Significant gaps. Return to the fundamentals.']
-  ];
-  document.getElementById('verdict').textContent = msgs.find(([t]) => pct >= t)[1];
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  container.querySelectorAll('h2, h3').forEach(h => obs.observe(h));
 }
 
-/* ---- theme toggle ---- */
-function toggleTheme() {
-  const html = document.documentElement;
-  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', next);
-  localStorage.setItem('quiz-theme', next);
-  document.getElementById('themetoggle').textContent = next === 'dark' ? 'light' : 'dark';
+// ── copy buttons ─────────────────────────────────────────────────
+function addCopyBtns(container) {
+  container.querySelectorAll('pre').forEach(pre => {
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'copy';
+    btn.onclick = () => {
+      const text = (pre.querySelector('code') || pre).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'copied';
+        btn.classList.add('ok');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('ok'); }, 1800);
+      });
+    };
+    wrap.appendChild(btn);
+  });
 }
-// set initial button label
-(function() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  document.getElementById('themetoggle').textContent = current === 'dark' ? 'light' : 'dark';
-})();
+
+// ── progress bar ─────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('content');
+  if (!el) return;
+  const pct = Math.min(100, (-el.getBoundingClientRect().top / (el.offsetHeight - window.innerHeight)) * 100);
+  document.getElementById('progress-bar').style.width = Math.max(0, pct) + '%';
+}, { passive: true });
+
+// ── generate ─────────────────────────────────────────────────────
+function gen() {
+  if (!validateAll()) return;
+
+  const name     = iName.value.trim();
+  const admin    = iAdmin.value.trim();
+  const idx      = parseInt(iIndex.value);
+  const initials = iInitials.value.trim();
+
+  document.getElementById('chip-admin').textContent = admin;
+  document.getElementById('chip-cidr').textContent  = `10.${idx}.0.0/16`;
+  document.getElementById('chip-init').textContent  = initials;
+  document.getElementById('chip-name').textContent  = name;
+
+  const md      = personalise(RAW, name, admin, idx, initials);
+  const content = document.getElementById('content');
+  content.innerHTML = marked.parse(md);
+
+  // syntax highlight - hljs.highlightElement handles language detection
+  // and won't warn for unknown langs if we register them all upfront
+  content.querySelectorAll('pre code').forEach(block => {
+    hljs.highlightElement(block);
+  });
+
+  // interactive checkboxes
+  content.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.removeAttribute('disabled'));
+
+  buildTOC(content);
+  addCopyBtns(content);
+
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('guide-screen').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function back() {
+  document.getElementById('guide-screen').style.display = 'none';
+  document.getElementById('setup-screen').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('setup-screen').style.display !== 'none') gen();
+});
 </script>
 </body>
 </html>
